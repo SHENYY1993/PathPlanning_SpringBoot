@@ -7,7 +7,6 @@ import com.shenyy.pretendto.core.model.table.EBook;
 import com.shenyy.pretendto.core.sal.EBookService;
 import org.springframework.stereotype.Service;
 
-@DS("slave_1")
 @Service
 public class EBookServiceImpl extends ServiceImpl<EBookMapper, EBook> implements EBookService {
 }

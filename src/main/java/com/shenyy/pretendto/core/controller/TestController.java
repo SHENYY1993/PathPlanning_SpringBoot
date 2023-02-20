@@ -1,5 +1,6 @@
 package com.shenyy.pretendto.core.controller;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.shenyy.pretendto.core.model.table.Book;
 import com.shenyy.pretendto.core.model.table.EBook;
 import com.shenyy.pretendto.core.sal.EBookService;
@@ -27,8 +28,15 @@ public class TestController {
         return book;
     }
 
-    @GetMapping(value = "/ebook")
+    @DS("master")
+    @GetMapping(value = "/master/ebook")
     public EBook getEBook() {
         return eBookService.getById(1L);
+    }
+
+    @DS("slave_1")
+    @GetMapping(value = "/slave/ebook")
+    public EBook getEBook2() {
+        return eBookService.getById(2L);
     }
 }
