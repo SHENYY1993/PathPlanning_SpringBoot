@@ -29,7 +29,7 @@
     </properties>
 
     <dependencies>
-        <!--        Spring Boot中提供的Starter非常多，这些Starter主要为第三方库提供自动配置，例如要开发一个Web项目，就可以先引入一个Web的Starter-->
+        <!--Spring Boot中提供的Starter非常多，这些Starter主要为第三方库提供自动配置，例如要开发一个Web项目，就可以先引入一个Web的Starter-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -41,33 +41,33 @@
             <scope>test</scope>
         </dependency>
 
-        <!--        WebMvcAutoConfiguration是Spring Boot自动化配置的一部分，它在spring-boot-autoconfigure模块中-->
+        <!--WebMvcAutoConfiguration是Spring Boot自动化配置的一部分，它在spring-boot-autoconfigure模块中-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
 
-        <!--        AOP-->
+        <!--AOP-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
-        <!--        MyBatis-Plus的Spring Boot启动器，它包含了MyBatis-Plus所需的所有依赖和配置，使得使用MyBatis-Plus变得更加简单-->
+        <!--MyBatis-Plus的Spring Boot启动器，它包含了MyBatis-Plus所需的所有依赖和配置，使得使用MyBatis-Plus变得更加简单-->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>${mybatis-plus.version}</version>
         </dependency>
 
-        <!--        MyBatis-Plus的扩展模块，包含一些扩展功能，例如：性能分析器、动态表名、多租户等-->
+        <!--MyBatis-Plus的扩展模块，包含一些扩展功能，例如：性能分析器、动态表名、多租户等-->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-extension</artifactId>
             <version>${mybatis-plus.version}</version>
         </dependency>
 
-        <!--        MyBatis-Plus的代码生成器，它可以根据数据库表结构自动生成Java实体类、Mapper接口以及Mapper.xml文件-->
+        <!--MyBatis-Plus的代码生成器，它可以根据数据库表结构自动生成Java实体类、Mapper接口以及Mapper.xml文件-->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-generator</artifactId>
@@ -85,12 +85,23 @@
             <version>1.1.14</version>
         </dependency>
 
+        <!--多数据源-->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
             <version>3.5.0</version>
         </dependency>
 
+        <!--redis-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.lettuce</groupId>
+            <artifactId>lettuce-core</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
