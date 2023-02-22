@@ -17,6 +17,16 @@ public class RedisBizImpl implements RedisBiz {
     }
 
     @Override
+    public void setIfAbsent(String key, Object value) {
+        redisTemplate.opsForValue().setIfAbsent(key, value);
+    }
+
+    @Override
+    public void setIfPresent(String key, Object value) {
+        redisTemplate.opsForValue().setIfPresent(key, value);
+    }
+
+    @Override
     public Object get(String key) {
         return redisTemplate.opsForValue().get(key);
     }

@@ -1,9 +1,13 @@
 package com.shenyy.pretendto.core.biz;
 
 public interface RedisBiz {
-    public void set(String key, Object value);
+    void set(String key, Object value);
 
-    public Object get(String key);
+    void setIfAbsent(String key, Object value);
 
-    public void delete(String key);
+    void setIfPresent(String key, Object value);
+
+    Object get(String key);
+
+    void delete(String key);
 }
