@@ -1,2 +1,2 @@
-# PretentTo
-Pretent to do something
+# PretendTo
+Pretend to do something
