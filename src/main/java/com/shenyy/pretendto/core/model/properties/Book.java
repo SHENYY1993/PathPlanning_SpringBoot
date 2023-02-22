@@ -1,4 +1,4 @@
-package com.shenyy.pretendto.core.model.table;
+package com.shenyy.pretendto.core.model.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

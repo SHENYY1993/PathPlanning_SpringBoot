@@ -1,7 +1,7 @@
 package com.shenyy.pretendto.core.controller;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
-import com.shenyy.pretendto.core.model.table.Book;
+import com.shenyy.pretendto.core.model.properties.Book;
 import com.shenyy.pretendto.core.model.table.EBook;
 import com.shenyy.pretendto.core.sal.EBookService;
 import org.springframework.web.bind.annotation.GetMapping;
