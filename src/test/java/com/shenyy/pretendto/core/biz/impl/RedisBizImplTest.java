@@ -18,7 +18,7 @@ public class RedisBizImplTest extends ParentTest {
 
     @Test
     public void testSetnx() {
-        redisBiz.setIfAbsent("key-6","new value");
+        redisBiz.setIfAbsent("key-6", "new value");
     }
 
     @Test
@@ -27,5 +27,18 @@ public class RedisBizImplTest extends ParentTest {
 
     @Test
     public void testDelete() {
+    }
+
+    @Test
+    public void testSetToCache() {
+        redisBiz.setToCache("key-002", "value-002", 60L);
+        Object result = redisBiz.getFromCache("key-002");
+        System.out.println(result);
+    }
+
+    @Test
+    public void testGetFromCache() {
+        Object result = redisBiz.getFromCache("key-002");
+        System.out.println(result);
     }
 }

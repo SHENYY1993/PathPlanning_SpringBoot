@@ -1,8 +1,6 @@
 package com.shenyy.pretendto.core.config;
 
 import com.shenyy.pretendto.core.model.properties.RedisProperties;
-import io.lettuce.core.ClientOptions;
-import io.lettuce.core.RedisURI;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;

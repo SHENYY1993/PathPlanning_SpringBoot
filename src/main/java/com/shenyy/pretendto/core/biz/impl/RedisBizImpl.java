@@ -1,5 +1,6 @@
 package com.shenyy.pretendto.core.biz.impl;
 
+import com.shenyy.pretendto.cache.RedisCache;
 import com.shenyy.pretendto.core.biz.RedisBiz;
 import io.lettuce.core.protocol.CommandType;
 import org.springframework.dao.DataAccessException;
@@ -56,5 +57,15 @@ public class RedisBizImpl implements RedisBiz {
     @Override
     public void delete(String key) {
         redisTemplate.delete(key);
+    }
+
+    @Override
+    public void setToCache(String key, String value, Long exp) {
+        RedisCache.getInstance().setDataInCache(key, value, exp);
+    }
+
+    @Override
+    public Object getFromCache(String key) {
+        return RedisCache.getInstance().getDataFromCache(key);
     }
 }

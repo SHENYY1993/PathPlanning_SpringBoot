@@ -34,12 +34,6 @@ public class RedisController {
         return result;
     }
 
-    @GetMapping(value = "/getOne")
-    public Object get() {
-        System.out.println(redisBiz.get("testKey"));
-        return redisBiz.get("testKey");
-    }
-
     @PostMapping(value = "/set")
     public void set(@RequestParam(value = "key") String key,
                     @RequestParam(value = "value") Object value) {

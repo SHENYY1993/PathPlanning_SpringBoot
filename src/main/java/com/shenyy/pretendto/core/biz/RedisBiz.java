@@ -12,4 +12,8 @@ public interface RedisBiz {
     Object get(String key);
 
     void delete(String key);
+
+    void setToCache(String key, String value,Long exp);
+
+    Object getFromCache(String key);
 }
