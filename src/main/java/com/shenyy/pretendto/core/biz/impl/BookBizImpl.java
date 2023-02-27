@@ -14,6 +14,8 @@ import java.util.Set;
 
 @Service
 public class BookBizImpl implements BookBiz {
+    private String prefix = EBook.class.getSimpleName();
+
     @Resource
     EBookService eBookService;
 
@@ -22,10 +24,12 @@ public class BookBizImpl implements BookBiz {
 
     @Override
     public Object getEBook(Long id) {
-        Object dataCache = redisBiz.get("ebook:" + id);
+        Object dataCache = redisBiz.get(prefix + ":" + id);
         if (dataCache == null) {
             dataCache = eBookService.getById(id);
-            redisBiz.setIfAbsent("ebook:" + id, (JSONObject.toJSON(dataCache)).toString());
+            if (dataCache != null) {
+                redisBiz.setIfAbsent(prefix + ":" + id, (JSONObject.toJSON(dataCache)).toString());
+            }
         } else {
             dataCache = JSONObject.parseObject(dataCache.toString(), EBook.class);
         }
@@ -49,5 +53,18 @@ public class BookBizImpl implements BookBiz {
         }
 
         return eBookService.save(eBook);
+    }
+
+    @Override
+    public boolean deleteEBook(Long id) {
+        //删除缓存内
+        redisBiz.delete(prefix + ":" + id);
+        //删除数据库中的
+        return eBookService.removeById(id);
+    }
+
+    @Override
+    public Object updateEBook(Long id, JSONObject info) {
+        return null;
     }
 }

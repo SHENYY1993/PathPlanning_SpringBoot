@@ -53,4 +53,10 @@ public class TestController {
     public boolean saveEBook2(@RequestBody JSONObject info) {
         return bookBiz.saveEBook(info);
     }
+
+    @DS("master")
+    @PostMapping(value = "/master/deleteEBook")
+    public boolean deleteEBook(@RequestParam(value = "id") Long id) {
+        return bookBiz.deleteEBook(id);
+    }
 }
