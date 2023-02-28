@@ -16,7 +16,7 @@ import java.util.Set;
 
 @Service
 //@CacheConfig(cacheNames = "book_cache")
-@CacheConfig(cacheNames = "c1")
+@CacheConfig(cacheNames = "EBook")
 public class BookBizImpl implements BookBiz {
     private String prefix = EBook.class.getSimpleName();
 
@@ -60,6 +60,9 @@ public class BookBizImpl implements BookBiz {
         if (CommonUtils.isKeyValueNotEmpty(info, "Author")) {
             eBook.setAuthor(info.get("Author").toString());
         }
+        if (CommonUtils.isKeyValueNotEmpty(info, "Description")) {
+            eBook.setDescription(info.get("Description").toString());
+        }
         if (CommonUtils.isKeyValueNotEmpty(info, "Price")) {
             eBook.setPrice((Double) info.get("Price"));
         }
@@ -70,13 +73,35 @@ public class BookBizImpl implements BookBiz {
     @Override
     public boolean deleteEBook(Long id) {
         //删除缓存内
-        redisBiz.delete(prefix + ":" + id);
+        redisBiz.delete(prefix + "::" + id);
         //删除数据库中的
         return eBookService.removeById(id);
     }
 
     @Override
-    public Object updateEBook(Long id, JSONObject info) {
-        return null;
+    public boolean updateEBook(JSONObject info) {
+        EBook eBook = new EBook();
+        if (CommonUtils.isKeyValueNotEmpty(info, "Name")) {
+            eBook.setName(info.get("Name").toString());
+        }
+        if (CommonUtils.isKeyValueNotEmpty(info, "Doi")) {
+            eBook.setDoi(new Long((Integer) info.get("Doi")));
+        }
+        if (CommonUtils.isKeyValueNotEmpty(info, "Author")) {
+            eBook.setAuthor(info.get("Author").toString());
+        }
+        if (CommonUtils.isKeyValueNotEmpty(info, "Description")) {
+            eBook.setDescription(info.get("Description").toString());
+        }
+        if (CommonUtils.isKeyValueNotEmpty(info, "Price")) {
+            eBook.setPrice((Double) info.get("Price"));
+        }
+
+        //删除缓存内
+        if (CommonUtils.isKeyValueNotEmpty(info, "id")) {
+            redisBiz.delete(prefix + "::" + info.get("id"));
+        }
+
+        return eBookService.updateById(eBook);
     }
 }

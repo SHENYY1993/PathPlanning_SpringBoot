@@ -95,6 +95,6 @@ mongodb:
 #    config: classpath:config/ehcache.xml
 
 cache:
-  cache-name: c1,c2
+  cache-names: EBooK,c2
   redis:
     time-to-live: 60s

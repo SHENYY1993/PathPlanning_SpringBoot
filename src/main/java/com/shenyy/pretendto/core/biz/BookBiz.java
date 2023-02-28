@@ -10,5 +10,5 @@ public interface BookBiz {
 
     boolean deleteEBook(Long id);
 
-    Object updateEBook(Long id, JSONObject info);
+    boolean updateEBook(JSONObject info);
 }
