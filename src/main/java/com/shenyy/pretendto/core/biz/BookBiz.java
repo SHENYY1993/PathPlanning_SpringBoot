@@ -1,9 +1,10 @@
 package com.shenyy.pretendto.core.biz;
 
 import com.alibaba.fastjson.JSONObject;
+import com.shenyy.pretendto.core.model.table.EBook;
 
 public interface BookBiz {
-    Object getEBook(Long id);
+    EBook getEBook(Long id);
 
     boolean saveEBook(JSONObject info);
 

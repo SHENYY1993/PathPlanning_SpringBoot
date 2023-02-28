@@ -103,21 +103,27 @@
             <artifactId>lettuce-core</artifactId>
         </dependency>
 
+        <!--样板代码生成，可以通过注解减少Java代码中的样板代码-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
+
+        <!--JSON-->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.83</version>
         </dependency>
+
+        <!--度量指标（metrics）框架，提供了一种通用的方式来度量各种应用程序（包括Java、Groovy、Kotlin等）的指标数据，并将其发送到不同的监控系统或记录器-->
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-core</artifactId>
             <version>1.3.5</version>
         </dependency>
 
+        <!--mongodb-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
@@ -125,6 +131,18 @@
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-mongodb</artifactId>
+        </dependency>
+
+        <!--缓存cache-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-core</artifactId>
+            <version>2.6.11</version>
         </dependency>
     </dependencies>
 

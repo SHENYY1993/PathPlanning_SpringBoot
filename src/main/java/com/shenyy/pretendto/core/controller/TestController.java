@@ -14,10 +14,11 @@ import javax.annotation.Resource;
 @RequestMapping("/test")
 public class TestController {
     public static void main(String[] args) {
-        System.setProperty("javax.net.ssl.trustStore","D:\\JavaCert\\trustStore");
+        System.setProperty("javax.net.ssl.trustStore", "D:\\JavaCert\\trustStore");
         System.out.println(System.getProperty("javax.net.ssl.trustStore"));
 
     }
+
     @Resource
     Book book;
     @Resource
@@ -44,7 +45,7 @@ public class TestController {
     @DS("slave_1")
     @PostMapping(value = "/slave/getEBook")
     public EBook getEBook2(@RequestParam(value = "id") Long id) {
-        return (EBook) bookBiz.getEBook(id);
+        return bookBiz.getEBook(id);
     }
 
     @DS("master")

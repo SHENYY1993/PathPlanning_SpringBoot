@@ -6,6 +6,8 @@ import com.shenyy.pretendto.core.biz.RedisBiz;
 import com.shenyy.pretendto.core.model.table.EBook;
 import com.shenyy.pretendto.core.sal.EBookService;
 import com.shenyy.pretendto.utils.CommonUtils;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -13,6 +15,8 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+//@CacheConfig(cacheNames = "book_cache")
+@CacheConfig(cacheNames = "c1")
 public class BookBizImpl implements BookBiz {
     private String prefix = EBook.class.getSimpleName();
 
@@ -22,8 +26,16 @@ public class BookBizImpl implements BookBiz {
     @Resource
     RedisBiz redisBiz;
 
+    @Cacheable
     @Override
-    public Object getEBook(Long id) {
+    public EBook getEBook(Long id) {
+        System.out.println("Invoke getEBook()");
+        EBook dataCache = eBookService.getById(id);
+        return dataCache;
+    }
+
+    public EBook getEBookNoCache(Long id) {
+        System.out.println("Invoke getEBook()");
         Object dataCache = redisBiz.get(prefix + ":" + id);
         if (dataCache == null) {
             dataCache = eBookService.getById(id);
@@ -33,7 +45,7 @@ public class BookBizImpl implements BookBiz {
         } else {
             dataCache = JSONObject.parseObject(dataCache.toString(), EBook.class);
         }
-        return dataCache;
+        return (EBook) dataCache;
     }
 
     @Override

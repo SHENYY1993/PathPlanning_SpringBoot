@@ -85,6 +85,16 @@ mongodb:
   port:
   username:
   password:
-#  uri: mongodb+srv://<username>:<password>@<clustername>.mongodb.net/<dbname>?retryWrites=true&w=majority
-#  uri: mongodb://shenyangyang163:CSwThEAwxccLptwZ@ac-jxu9bft-shard-00-00.pjmx2qs.mongodb.net:27017,ac-jxu9bft-shard-00-01.pjmx2qs.mongodb.net:27017,ac-jxu9bft-shard-00-02.pjmx2qs.mongodb.net:27017/?ssl=true&replicaSet=atlas-tovtrf-shard-0&authSource=admin&retryWrites=true&w=majority
+  #  uri: mongodb+srv://<username>:<password>@<clustername>.mongodb.net/<dbname>?retryWrites=true&w=majority
+  #  uri: mongodb://shenyangyang163:CSwThEAwxccLptwZ@ac-jxu9bft-shard-00-00.pjmx2qs.mongodb.net:27017,ac-jxu9bft-shard-00-01.pjmx2qs.mongodb.net:27017,ac-jxu9bft-shard-00-02.pjmx2qs.mongodb.net:27017/?ssl=true&replicaSet=atlas-tovtrf-shard-0&authSource=admin&retryWrites=true&w=majority
   uri: mongodb+srv://shenyangyang163:CSwThEAwxccLptwZ@cluster0.pjmx2qs.mongodb.net/sample_analytics?retryWrites=true&w=majority
+
+#配置cache
+#cache:
+#  ecache:
+#    config: classpath:config/ehcache.xml
+
+cache:
+  cache-name: c1,c2
+  redis:
+    time-to-live: 60s
