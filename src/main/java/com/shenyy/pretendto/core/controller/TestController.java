@@ -13,6 +13,11 @@ import javax.annotation.Resource;
 @RestController
 @RequestMapping("/test")
 public class TestController {
+    public static void main(String[] args) {
+        System.setProperty("javax.net.ssl.trustStore","D:\\JavaCert\\trustStore");
+        System.out.println(System.getProperty("javax.net.ssl.trustStore"));
+
+    }
     @Resource
     Book book;
     @Resource
