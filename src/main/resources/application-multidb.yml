@@ -22,79 +22,85 @@ spring:
           url: jdbc:mysql://sit-mysql8.cttvfwmppwab.rds.cn-northwest-1.amazonaws.com.cn:3306/pretend_dev2?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&allowMultiQueries=true&serverTimezone=GMT%2B8&useSSL=false
           username: admin
           password: jmjqr123
-  initialSize: 5    # 初始化大小
-  minIdle: 5        # 最小
-  maxActive: 20     # 最大
-  maxWait: 60000    # 获取连接等待超时的时间
-  timeBetweenEvictionRunsMillis: 60000    # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
-  minEvictableIdleTimeMillis: 300000      # 配置一个连接在池中最小生存的时间，单位是毫秒
-  validationQuery: SELECT 1 FROM DUAL
-  testWhileIdle: true
-  testOnBorrow: false
-  testOnReturn: false
-  poolPreparedStatements: true                    # 打开PSCache
-  maxPoolPreparedStatementPerConnectionSize: 20   # 指定每个连接上PSCache的大小
-  filters: stat,wall,log4j                        # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
-  connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000  # 通过connectProperties属性来打开
-  useCompression: true
+    initialSize: 5    # 初始化大小
+    minIdle: 5        # 最小
+    maxActive: 20     # 最大
+    maxWait: 60000    # 获取连接等待超时的时间
+    timeBetweenEvictionRunsMillis: 60000    # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+    minEvictableIdleTimeMillis: 300000      # 配置一个连接在池中最小生存的时间，单位是毫秒
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true                    # 打开PSCache
+    maxPoolPreparedStatementPerConnectionSize: 20   # 指定每个连接上PSCache的大小
+    filters: stat,wall,log4j                        # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000  # 通过connectProperties属性来打开
+    useCompression: true
 
-mybatis-plus:
-  mapper-locations: classpath:mybatis/**/*Mapper.xml
-  global-config:
-    banner: false
-    db-config:
-      id-type:
-        - AUTO
-      field-strategy:
-        - 1
-      table-underline:
+  mybatis-plus:
+    mapper-locations: classpath:mybatis/**/*Mapper.xml
+    global-config:
+      banner: false
+      db-config:
+        id-type:
+          - AUTO
+        field-strategy:
+          - 1
+        table-underline:
+          - true
+        logic-delete-value:
+          - 1
+        logic-not-delete-value:
+          - 0
+    configuration:
+      map-underscore-to-camel-case:
         - true
-      logic-delete-value:
-        - 1
-      logic-not-delete-value:
-        - 0
-  configuration:
-    map-underscore-to-camel-case:
-      - true
-#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
-#配置Mybatis
-mybatis:
-  configuration:
-    map-underscore-to-camel-case: true
+  #配置Mybatis
+  mybatis:
+    configuration:
+      map-underscore-to-camel-case: true
 
-#配置redis
-redis:
-  database: 0 #Redis库编号0~16
-  host: 3.92.77.6
-  password: a123456
-  port: 6379
-  timeout: 30000
-  lettuce:
-    pool: #连接池配置
-      max-active: 8 #最大连接数
-      max-wait: -1 #最大阻塞等待时间
-      max-idle: 8 #最大空闲连接数
-      min-idle: 0 #最小空闲连接数
-
-#配置mongodb
-mongodb:
-  authentication-database: admin
-  database: test
-  host:
-  port:
-  username:
-  password:
-  #  uri: mongodb+srv://<username>:<password>@<clustername>.mongodb.net/<dbname>?retryWrites=true&w=majority
-  #  uri: mongodb://shenyangyang163:CSwThEAwxccLptwZ@ac-jxu9bft-shard-00-00.pjmx2qs.mongodb.net:27017,ac-jxu9bft-shard-00-01.pjmx2qs.mongodb.net:27017,ac-jxu9bft-shard-00-02.pjmx2qs.mongodb.net:27017/?ssl=true&replicaSet=atlas-tovtrf-shard-0&authSource=admin&retryWrites=true&w=majority
-  uri: mongodb+srv://shenyangyang163:CSwThEAwxccLptwZ@cluster0.pjmx2qs.mongodb.net/sample_analytics?retryWrites=true&w=majority
-
-#配置cache
-#cache:
-#  ecache:
-#    config: classpath:config/ehcache.xml
-
-cache:
-  cache-names: EBooK,c2
+  #配置redis
   redis:
-    time-to-live: 60s
+    database: 0 #Redis库编号0~16
+    host: 3.92.77.6
+    password: a123456
+    port: 6379
+    timeout: 30000
+    lettuce:
+      pool: #连接池配置
+        max-active: 8 #最大连接数
+        max-wait: -1 #最大阻塞等待时间
+        max-idle: 8 #最大空闲连接数
+        min-idle: 0 #最小空闲连接数
+
+  #配置mongodb
+  mongodb:
+    authentication-database: admin
+    database: test
+    host:
+    port:
+    username:
+    password:
+    #  uri: mongodb+srv://<username>:<password>@<clustername>.mongodb.net/<dbname>?retryWrites=true&w=majority
+    #  uri: mongodb://shenyangyang163:CSwThEAwxccLptwZ@ac-jxu9bft-shard-00-00.pjmx2qs.mongodb.net:27017,ac-jxu9bft-shard-00-01.pjmx2qs.mongodb.net:27017,ac-jxu9bft-shard-00-02.pjmx2qs.mongodb.net:27017/?ssl=true&replicaSet=atlas-tovtrf-shard-0&authSource=admin&retryWrites=true&w=majority
+    uri: mongodb+srv://shenyangyang163:CSwThEAwxccLptwZ@cluster0.pjmx2qs.mongodb.net/sample_analytics?retryWrites=true&w=majority
+
+  #配置cache
+  #cache:
+  #  ecache:
+  #    config: classpath:config/ehcache.xml
+  cache:
+    cache-names: EBooK,c2
+    redis:
+      time-to-live: 300s
+
+  #配置安全管理
+  security:
+    admin:
+      name: admin
+      password: a123456
+      roles: admin
