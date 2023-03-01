@@ -14,12 +14,12 @@ public class CacheConfig {
     @Resource
     RedisConnectionFactory redisConnectionFactory;
 
-    @Bean
-    public RedisCacheManager cacheManager() {
-        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofSeconds(60));
-        return RedisCacheManager.builder(redisConnectionFactory)
-                .cacheDefaults(redisCacheConfiguration)
-                .build();
-    }
+//    @Bean
+//    public RedisCacheManager cacheManager() {
+//        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+//                .entryTtl(Duration.ofSeconds(60));
+//        return RedisCacheManager.builder(redisConnectionFactory)
+//                .cacheDefaults(redisCacheConfiguration)
+//                .build();
+//    }
 }
