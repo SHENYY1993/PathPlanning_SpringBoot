@@ -11,8 +11,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class MongoDBConfig {
-    @Value("${mongodb.uri}")
-    private String uri;
+    @Value("${spring.mongodb.uri}")
+    String uri;
 
     @Bean
     public MongoDatabase mongoDatabase() {
