@@ -30,7 +30,7 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .withUser(username).password(new BCryptPasswordEncoder(10).encode(password)).roles("ADMIN", "USER")
                 .and()
-                .withUser("shen").password("a123456").roles("USER");
+                .withUser("shen").password(new BCryptPasswordEncoder(10).encode("a123456")).roles("USER");
     }
 
     @Override
