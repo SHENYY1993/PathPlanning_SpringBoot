@@ -1,5 +1,7 @@
 package com.shenyy.pretendto.core.config;
 
+import com.shenyy.pretendto.core.sal.UserService;
+import com.shenyy.pretendto.core.sal.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,8 +9,9 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import javax.annotation.Resource;
 
 @Configuration
 public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -18,37 +21,66 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${spring.security.admin.password}")
     String password;
 
+    @Resource
+    UserServiceImpl userServiceImpl;
+
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(10);
     }
 
+//    /**
+//     * 配置内存用户
+//     */
+//    @Override
+//    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.inMemoryAuthentication()
+//                .withUser("root").password(new BCryptPasswordEncoder(10).encode("a123456")).roles("ADMIN", "DBA")
+//                .and()
+//                .withUser(username).password(new BCryptPasswordEncoder(10).encode(password)).roles("ADMIN", "USER")
+//                .and()
+//                .withUser("shen").password(new BCryptPasswordEncoder(10).encode("a123456")).roles("USER");
+//    }
+
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception {
+//        http.authorizeRequests()
+//                .antMatchers("/test/**").hasRole("ADMIN")
+//                .antMatchers("/redis/**").access("hasAnyRole('ADMIN','USER')")
+//                .anyRequest()
+//                .authenticated()
+//                .and()
+//                .formLogin()
+//                .loginProcessingUrl("/login")
+//                .defaultSuccessUrl("/")
+//                .permitAll()
+//                .and()
+//                .logout()
+//                .logoutSuccessUrl("/")
+//                .permitAll()
+//                .and()
+//                .csrf().disable();
+//    }
+
+    /**
+     * 基于数据库的认证
+     */
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("root").password(new BCryptPasswordEncoder(10).encode("a123456")).roles("ADMIN", "DBA")
-                .and()
-                .withUser(username).password(new BCryptPasswordEncoder(10).encode(password)).roles("ADMIN", "USER")
-                .and()
-                .withUser("shen").password(new BCryptPasswordEncoder(10).encode("a123456")).roles("USER");
+        auth.userDetailsService(userServiceImpl);
     }
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/test/**").hasRole("ADMIN")
-                .antMatchers("/redis/**").access("hasAnyRole('ADMIN','USER')")
-                .anyRequest()
-                .authenticated()
+                .antMatchers("/test/**").hasRole("admin")
+                .antMatchers("/redis/**").access("hasAnyRole('admin','dba')")
+                .antMatchers("/user/**").access("hasAnyRole('admin','dba','user')")
+                .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/")
-                .permitAll()
-                .and()
-                .logout()
-                .logoutSuccessUrl("/")
-                .permitAll()
+                .loginProcessingUrl("/login").permitAll()
                 .and()
                 .csrf().disable();
     }
