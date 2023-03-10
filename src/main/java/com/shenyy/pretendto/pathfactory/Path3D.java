@@ -13,7 +13,7 @@ public class Path3D<T, O> extends Path {
     }
 
     @Override
-    void construct() {
+    public void construct() {
         //TODO 3D path construct
         System.out.println("Constructing 3D path...");
     }

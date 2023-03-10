@@ -13,7 +13,7 @@ public class Path2D<T, O> extends Path {
     }
 
     @Override
-    void construct() {
+    public void construct() {
         PathAlgo<Point, Obstacle<Point>> pathAlgo;
         switch (algoType) {
             case DIJKSTRA:

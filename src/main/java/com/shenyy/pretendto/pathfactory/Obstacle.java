@@ -2,7 +2,7 @@ package com.shenyy.pretendto.pathfactory;
 
 import com.shenyy.pretendto.pathfactory.enumtype.ObstacleType;
 
-abstract class Obstacle<T> {
+public abstract class Obstacle<T> {
     protected T location;
     protected ObstacleType obstacleType;
     protected double radius;

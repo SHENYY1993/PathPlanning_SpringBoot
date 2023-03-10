@@ -1,0 +1,49 @@
+@startuml
+
+BatchController ..> BatchBizImpl
+BatchBizImpl ..> BatchServiceImpl
+ServiceImpl ..> BatchMapper
+ServiceImpl ..> Batch
+BatchMapper ..> Batch
+
+'===================================
+class BatchController{
+getBatchListBySFV():ResultWrapper
+addBatch():ResultWrapper
+deleteBatch():ResultWrapper
+updateBatch():ResultWrapper
+getBatchInfoById():ResultWrapper
+batchBiz: BatchBiz
+}
+
+class BatchBizImpl implements BatchBiz{
+queryBatchList(): List<Batch>
+queryBatchBySeasonFieldHybird(): List<Batch>
+addBatch(): Batch
+deleteBatch(Long batchId): Boolean
+updateBatch(Long batchId, String batchParams): Batch
+queryBatchById(Long id): Batch
+}
+
+interface BatchBiz {
+queryBatchList(): List<Batch>
+queryBatchBySeasonFieldHybird(): List<Batch>
+addBatch(): Batch
+deleteBatch(Long batchId): Boolean
+updateBatch(Long batchId, String batchParams): Batch
+queryBatchById(Long id): Batch
+}
+
+class BatchServiceImpl extends ServiceImpl implements BatchService
+interface BatchService implements IService
+interface BatchMapper implements BaseMapper
+
+class Batch{
+id:Long
+date:Date
+prodSeasonId:Long
+fieldId:String
+hybridId:String
+}
+
+@enduml

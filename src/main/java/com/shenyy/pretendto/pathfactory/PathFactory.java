@@ -5,7 +5,7 @@ import com.shenyy.pretendto.pathfactory.enumtype.AlgoType;
 import java.util.List;
 import java.util.Map;
 
-abstract class PathFactory<T, O> {
+public abstract class PathFactory<T, O> {
     protected T source;
 
     protected T target;
@@ -27,21 +27,21 @@ abstract class PathFactory<T, O> {
     /**
      * 静态路径规划2D
      */
-    abstract Path createStaticPath2D();
+    public abstract Path createStaticPath2D();
 
     /**
      * 动态路径规划2D
      */
-    abstract Path createDynamicPath2D();
+    public abstract Path createDynamicPath2D();
 
     /**
      * 静态路径规划3D
      */
-    abstract Path createStaticPath3D();
+    public abstract Path createStaticPath3D();
 
 
     /**
      * 动态路径规划3D
      */
-    abstract Path createDynamicPath3D();
+    public abstract Path createDynamicPath3D();
 }

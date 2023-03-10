@@ -12,24 +12,24 @@ public class StaticPathFactory<T, O> extends PathFactory {
     }
 
     @Override
-    Path createStaticPath2D() {
+    public Path createStaticPath2D() {
         Path path = new Path2D(source, target, obstacles, algoType, PathType.STATIC_PATH, params);
         return path;
     }
 
     @Override
-    Path createDynamicPath2D() {
+    public Path createDynamicPath2D() {
         return null;
     }
 
     @Override
-    Path createStaticPath3D() {
+    public Path createStaticPath3D() {
         Path path = new Path3D(source, target, obstacles, algoType, PathType.STATIC_PATH, params);
         return path;
     }
 
     @Override
-    Path createDynamicPath3D() {
+    public Path createDynamicPath3D() {
         return null;
     }
 }

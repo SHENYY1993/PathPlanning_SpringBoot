@@ -33,5 +33,5 @@ public abstract class Path<T, O> {
     /**
      * 路径构建
      */
-    abstract void construct();
+    public abstract void construct();
 }
