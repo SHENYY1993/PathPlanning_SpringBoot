@@ -319,12 +319,14 @@ public class PathFinding {
                     staticPathFactory = new StaticPathFactory<>(null, null, null, AlgoType.DIJKSTRA, null);
                     Path path = staticPathFactory.createStaticPath2D();
                     path.construct();
+                    solving = false;
                     break;
                 case 1:
 //                    Alg.AStar();
                     staticPathFactory = new StaticPathFactory<>(null, null, null, AlgoType.A_STAR, null);
                     path = staticPathFactory.createStaticPath2D();
                     path.construct();
+                    solving = false;
                     break;
             }
         }
