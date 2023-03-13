@@ -18,7 +18,7 @@ public class RRTAlgo<T, O> extends PathAlgo {
     private int starty = -1;
     private int finishx = -1;
     private int finishy = -1;
-    private int gen = 100;
+    private int gen = 200;
     private double stepSize = 1;
 
     public RRTAlgo(Path<T, O> path) {
@@ -38,6 +38,7 @@ public class RRTAlgo<T, O> extends PathAlgo {
         finishx = PathFinding.getInstance().finishx;
         finishy = PathFinding.getInstance().finishy;
         solving = PathFinding.getInstance().solving;
+        gen = PathFinding.getInstance().cells * 10;
     }
 
     @Override
@@ -121,7 +122,7 @@ public class RRTAlgo<T, O> extends PathAlgo {
     public void backtrack(int lx, int ly, int hops) {    //BACKTRACK
         length = hops;
         PathFinding.getInstance().length = length;
-        while (hops > 1) {    //BACKTRACK FROM THE END OF THE PATH TO THE START
+        while (hops > 0) {    //BACKTRACK FROM THE END OF THE PATH TO THE START
             Node current = map[lx][ly];
             current.setType(5);
             lx = current.getLastX();
