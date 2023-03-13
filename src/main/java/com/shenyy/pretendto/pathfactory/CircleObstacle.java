@@ -1,11 +1,10 @@
 package com.shenyy.pretendto.pathfactory;
 
 import com.shenyy.pretendto.pathfactory.enumtype.ObstacleType;
+import javafx.geometry.Point2D;
 
-import java.awt.*;
-
-public class CircleObstacle extends Obstacle<Point> {
-    public CircleObstacle(Point location, double radius) {
+public class CircleObstacle extends Obstacle<Point2D> {
+    public CircleObstacle(Point2D location, double radius) {
         super(location, ObstacleType.CIRCLE, radius);
     }
 }

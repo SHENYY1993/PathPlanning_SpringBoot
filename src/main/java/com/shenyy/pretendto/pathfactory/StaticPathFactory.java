@@ -2,6 +2,7 @@ package com.shenyy.pretendto.pathfactory;
 
 import com.shenyy.pretendto.pathfactory.enumtype.AlgoType;
 import com.shenyy.pretendto.pathfactory.enumtype.PathType;
+import javafx.geometry.Point2D;
 
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,7 @@ public class StaticPathFactory<T, O> extends PathFactory {
 
     @Override
     public Path createStaticPath2D() {
-        Path path = new Path2D(source, target, obstacles, algoType, PathType.STATIC_PATH, params);
+        Path path = new Path2D((Point2D) source, (Point2D) target, obstacles, algoType, PathType.STATIC_PATH, params);
         return path;
     }
 

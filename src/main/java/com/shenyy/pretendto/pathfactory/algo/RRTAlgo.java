@@ -5,8 +5,8 @@ import com.shenyy.pretendto.pathfactory.Path;
 import java.util.Map;
 
 public class RRTAlgo<T, O> extends PathAlgo {
-    public RRTAlgo(Map<String, Double> paramMap, Path<T, O> path) {
-        super(paramMap, path);
+    public RRTAlgo( Path<T, O> path) {
+        super(path);
     }
 
     @Override

@@ -28,17 +28,4 @@ public class RedisBizImplTest extends ParentTest {
     @Test
     public void testDelete() {
     }
-
-    @Test
-    public void testSetToCache() {
-        redisBiz.setToCache("key-002", "value-002", 60L);
-        Object result = redisBiz.getFromCache("key-002");
-        System.out.println(result);
-    }
-
-    @Test
-    public void testGetFromCache() {
-        Object result = redisBiz.getFromCache("key-002");
-        System.out.println(result);
-    }
 }

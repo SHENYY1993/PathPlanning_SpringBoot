@@ -1,38 +1,39 @@
 package com.shenyy.pretendto.pathfactory;
 
 import com.shenyy.pretendto.pathfactory.algo.*;
-import com.shenyy.pretendto.pathfactory.enumtype.*;
+import com.shenyy.pretendto.pathfactory.enumtype.AlgoType;
+import com.shenyy.pretendto.pathfactory.enumtype.PathType;
+import javafx.geometry.Point2D;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Map;
 
-public class Path2D<T, O> extends Path {
-    public Path2D(T source, T target, List<O> obstacles, AlgoType algoType, PathType pathType, Map params) {
+public class Path2D extends Path {
+    public Path2D(Point2D source, Point2D target, List<Obstacle> obstacles, AlgoType algoType, PathType pathType, Map params) {
         super(source, target, obstacles, algoType, pathType, params);
     }
 
     @Override
     public void construct() {
-        PathAlgo<Point, Obstacle<Point>> pathAlgo;
+        PathAlgo<Point2D, CircleObstacle> pathAlgo;
         switch (algoType) {
             case DIJKSTRA:
-                pathAlgo = new DijkstraAlgo<>(params, this);
+                pathAlgo = new DijkstraAlgo(this);
                 break;
             case A_STAR:
-                pathAlgo = new AStarAlgo<>(params, this);
+                pathAlgo = new AStarAlgo<>(this);
                 break;
             case RRT:
-                pathAlgo = new RRTAlgo<>(params, this);
+                pathAlgo = new RRTAlgo<>(this);
                 break;
             case RRT_STAR:
-                pathAlgo = new RRTStarAlgo<>(params, this);
+                pathAlgo = new RRTStarAlgo<>(this);
                 break;
             case INFORMED_RRT:
-                pathAlgo = new InformedRRTStarAlgo<>(params, this);
+                pathAlgo = new InformedRRTStarAlgo<>(this);
                 break;
             default:
-                pathAlgo = new InformedRRTStarAlgo<>(params, this);
+                pathAlgo = new InformedRRTStarAlgo<>(this);
                 break;
         }
 

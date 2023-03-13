@@ -21,11 +21,6 @@ public class PathPlanningController {
     @DS("master")
     @PostMapping(value = "/getPath")
     public JSONObject getPath(@RequestBody JSONObject scenario) {
-        if (CommonUtils.isKeyValueNotEmpty(scenario, "Dimension")) {
-            if (scenario.get("Dimension") == "3D") {
-                return pathPlanningBiz.getPath3D(scenario);
-            }
-        }
         return pathPlanningBiz.getPath(scenario);
     }
 }

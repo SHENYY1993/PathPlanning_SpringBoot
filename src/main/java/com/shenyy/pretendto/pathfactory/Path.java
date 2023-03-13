@@ -3,11 +3,12 @@ package com.shenyy.pretendto.pathfactory;
 import com.shenyy.pretendto.pathfactory.enumtype.AlgoType;
 import com.shenyy.pretendto.pathfactory.enumtype.PathType;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public abstract class Path<T, O> {
-    protected List<T> path;
+    protected List<T> path = new ArrayList<>();
 
     protected T source;
 
@@ -28,6 +29,14 @@ public abstract class Path<T, O> {
         this.algoType = algoType;
         this.pathType = pathType;
         this.params = params;
+    }
+
+    public List<T> getPath() {
+        return path;
+    }
+
+    public void setPath(List<T> path) {
+        this.path = path;
     }
 
     /**
