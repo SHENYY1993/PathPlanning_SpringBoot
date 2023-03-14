@@ -11,7 +11,7 @@ public class AStarAlgo<T, O> extends PathAlgo {
     private int cells;
     private Node[][] map;
     private int checks = 0;
-    private int length = 0;
+    private double length = 0;
     private int startx = -1;
     private int starty = -1;
     private int finishx = -1;
@@ -47,8 +47,7 @@ public class AStarAlgo<T, O> extends PathAlgo {
                 solving = false;
                 break;
             }
-            int hops = priority.get(0).getHops() + 1;
-            ArrayList<Node> explored = exploreNeighbors(priority.get(0), hops);
+            ArrayList<Node> explored = exploreNeighbors(priority.get(0));
             if (explored.size() > 0) {
                 priority.remove(0);
                 priority.addAll(explored);
@@ -61,7 +60,7 @@ public class AStarAlgo<T, O> extends PathAlgo {
         }
     }
 
-    public ArrayList<Node> exploreNeighbors(Node current, int hops) {    //EXPLORE NEIGHBORS
+    public ArrayList<Node> exploreNeighbors(Node current) {    //EXPLORE NEIGHBORS
         ArrayList<Node> explored = new ArrayList<>();    //LIST OF NODES THAT HAVE BEEN EXPLORED
         for (int a = -1; a <= 1; a++) {
             for (int b = -1; b <= 1; b++) {
@@ -69,6 +68,7 @@ public class AStarAlgo<T, O> extends PathAlgo {
                 int ybound = current.getY() + b;
                 if ((xbound > -1 && xbound < cells) && (ybound > -1 && ybound < cells)) {    //MAKES SURE THE NODE IS NOT OUTSIDE THE GRID
                     Node neighbor = map[xbound][ybound];
+                    double hops = current.getHops() + current.getEuclidDist(xbound, ybound);
                     if ((neighbor.getHops() == -1 || neighbor.getHops() > hops) && neighbor.getType() != 2) {    //CHECKS IF THE NODE IS NOT A WALL AND THAT IT HAS NOT BEEN EXPLORED
                         explore(neighbor, current.getX(), current.getY(), hops);    //EXPLORE THE NODE
                         explored.add(neighbor);    //ADD THE NODE TO THE LIST
@@ -79,7 +79,7 @@ public class AStarAlgo<T, O> extends PathAlgo {
         return explored;
     }
 
-    public void explore(Node current, int lastx, int lasty, int hops) {    //EXPLORE A NODE
+    public void explore(Node current, int lastx, int lasty, double hops) {    //EXPLORE A NODE
         if (current.getType() != 0 && current.getType() != 1)    //CHECK THAT THE NODE IS NOT THE START OR FINISH
             current.setType(4);    //SET IT TO EXPLORED
         current.setLastNode(lastx, lasty);    //KEEP TRACK OF THE NODE THAT THIS NODE IS EXPLORED FROM
@@ -91,15 +91,17 @@ public class AStarAlgo<T, O> extends PathAlgo {
         }
     }
 
-    public void backtrack(int lx, int ly, int hops) {    //BACKTRACK
+    public void backtrack(int lx, int ly, double hops) {    //BACKTRACK
         length = hops;
         PathFinding.getInstance().length = length;
-        while (hops > 1) {    //BACKTRACK FROM THE END OF THE PATH TO THE START
+        while (hops > Math.sqrt(2) + 0.1) {    //BACKTRACK FROM THE END OF THE PATH TO THE START
             Node current = map[lx][ly];
             current.setType(5);
             lx = current.getLastX();
             ly = current.getLastY();
-            hops--;
+            hops = hops - current.getEuclidDist(lx, ly);
+            PathFinding.getInstance().Update();
+            PathFinding.getInstance().delay();
         }
         solving = false;
         PathFinding.getInstance().solving = solving;

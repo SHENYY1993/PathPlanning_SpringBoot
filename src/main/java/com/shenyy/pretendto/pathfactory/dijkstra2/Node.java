@@ -3,7 +3,7 @@ package com.shenyy.pretendto.pathfactory.dijkstra2;
 public class Node {
     // 0 = start, 1 = finish, 2 = wall, 3 = empty, 4 = checked, 5 = finalpath
     private int cellType = 0;
-    private int hops;
+    private double hops;
     private int x;
     private int y;
     private int lastX;
@@ -44,7 +44,7 @@ public class Node {
         return cellType;
     }
 
-    public int getHops() {
+    public double getHops() {
         return hops;
     }
 
@@ -57,7 +57,7 @@ public class Node {
         lastY = y;
     }
 
-    public void setHops(int hops) {
+    public void setHops(double hops) {
         this.hops = hops;
     }
 }
