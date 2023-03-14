@@ -62,7 +62,8 @@ public class RRTAlgo<T, O> extends PathAlgo {
                 samplePointY = (int) (Math.random() * cells);
             }
 
-            if (map[samplePointX][samplePointY].getType() == 2) {
+            if (map[samplePointX][samplePointY].getType() == 2
+                    || map[samplePointX][samplePointY].getType() == 4) {
                 i--;
                 continue;
             }
@@ -128,6 +129,8 @@ public class RRTAlgo<T, O> extends PathAlgo {
             lx = current.getLastX();
             ly = current.getLastY();
             hops--;
+            PathFinding.getInstance().Update();
+            PathFinding.getInstance().delay();
         }
         solving = false;
         PathFinding.getInstance().solving = solving;
