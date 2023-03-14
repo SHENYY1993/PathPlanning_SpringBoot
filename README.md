@@ -1,5 +1,9 @@
 # SpringBoot Demo & Path Planning Algorithm Demo
 ## SpringBoot Demo
+### Quick Start
+Run the **CoreApplication** to start the SpringBoot Demo
+
+### Including
 * ORM: Mybatis-plus
 * SQL: MySql(multi-sources), Druid
 * NoSQL: Redis, MongoDB (has bug)
@@ -11,6 +15,8 @@
 * WebSocket: TODO...
 
 ## Path Planning Algorithm Demo
+### Quick Start
+Run the **MySwingApplication** to start the Path Planning Algorithm Demo
 ### 1.Dijkstra
 ![Dijkstra Example](src/main/resources/assets/Dijkstra_Example.jpg)
 ### 2.A*
