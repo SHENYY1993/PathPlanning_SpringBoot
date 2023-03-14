@@ -14,7 +14,7 @@ public class DijkstraAlgo extends PathAlgo<Point2D, CircleObstacle> {
     private int cells;
     private Node[][] map;
     private int checks = 0;
-    private int length = 0;
+    private double length = 0;
     private int startx = -1;
     private int starty = -1;
     private int finishx = -1;
@@ -51,7 +51,7 @@ public class DijkstraAlgo extends PathAlgo<Point2D, CircleObstacle> {
                 PathFinding.getInstance().solving = solving;
                 break;
             }
-            int hops = priority.get(0).getHops() + 1;    //INCREMENT THE HOPS VARIABLE
+            double hops = priority.get(0).getHops() + 1;    //INCREMENT THE HOPS VARIABLE
             ArrayList<Node> explored = exploreNeighbors(priority.get(0), hops);    //CREATE AN ARRAYLIST OF NODES THAT WERE EXPLORED
             if (explored.size() > 0) {
                 priority.remove(0);    //REMOVE THE NODE FROM THE QUE
@@ -64,7 +64,7 @@ public class DijkstraAlgo extends PathAlgo<Point2D, CircleObstacle> {
         }
     }
 
-    public ArrayList<Node> exploreNeighbors(Node current, int hops) {    //EXPLORE NEIGHBORS
+    public ArrayList<Node> exploreNeighbors(Node current, double hops) {    //EXPLORE NEIGHBORS
         ArrayList<Node> explored = new ArrayList<>();    //LIST OF NODES THAT HAVE BEEN EXPLORED
         for (int a = -1; a <= 1; a++) {
             for (int b = -1; b <= 1; b++) {
@@ -82,7 +82,7 @@ public class DijkstraAlgo extends PathAlgo<Point2D, CircleObstacle> {
         return explored;
     }
 
-    public void explore(Node current, int lastx, int lasty, int hops) {    //EXPLORE A NODE
+    public void explore(Node current, int lastx, int lasty, double hops) {    //EXPLORE A NODE
         if (current.getType() != 0 && current.getType() != 1)    //CHECK THAT THE NODE IS NOT THE START OR FINISH
             current.setType(4);    //SET IT TO EXPLORED
         current.setLastNode(lastx, lasty);    //KEEP TRACK OF THE NODE THAT THIS NODE IS EXPLORED FROM
@@ -94,7 +94,7 @@ public class DijkstraAlgo extends PathAlgo<Point2D, CircleObstacle> {
         }
     }
 
-    public void backtrack(int lx, int ly, int hops) {    //BACKTRACK
+    public void backtrack(int lx, int ly, double hops) {    //BACKTRACK
         length = hops;
         PathFinding.getInstance().length = length;
         while (hops > 1) {    //BACKTRACK FROM THE END OF THE PATH TO THE START

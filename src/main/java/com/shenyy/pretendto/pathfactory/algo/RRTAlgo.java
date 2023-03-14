@@ -13,7 +13,7 @@ public class RRTAlgo<T, O> extends PathAlgo {
     private int cells;
     private Node[][] map;
     private int checks = 0;
-    private int length = 0;
+    private double length = 0;
     private int startx = -1;
     private int starty = -1;
     private int finishx = -1;
@@ -120,7 +120,7 @@ public class RRTAlgo<T, O> extends PathAlgo {
         }
     }
 
-    public void backtrack(int lx, int ly, int hops) {    //BACKTRACK
+    public void backtrack(int lx, int ly, double hops) {    //BACKTRACK
         length = hops;
         PathFinding.getInstance().length = length;
         while (hops > 0) {    //BACKTRACK FROM THE END OF THE PATH TO THE START

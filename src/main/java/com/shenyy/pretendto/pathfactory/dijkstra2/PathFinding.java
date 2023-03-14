@@ -31,7 +31,7 @@ public class PathFinding {
     public int finishy = -1;
     public int tool = 0;
     public int checks = 0;
-    public int length = 0;
+    public double length = 0;
     public int curAlg = 0;
     private int WIDTH = 850;
     private final int HEIGHT = 650;
@@ -80,11 +80,11 @@ public class PathFinding {
 
     private static PathFinding instance;
 
-    public static void main(String[] args) {    //MAIN METHOD
-        getInstance();
-        instance.clearMap();
-        instance.initialize();
-    }
+//    public static void main(String[] args) {    //MAIN METHOD
+//        getInstance();
+//        instance.clearMap();
+//        instance.initialize();
+//    }
 
     public PathFinding() {    //CONSTRUCTOR
     }
@@ -140,7 +140,7 @@ public class PathFinding {
         reset();    //RESET SOME VARIABLES
     }
 
-    private void initialize() {    //INITIALIZE THE GUI ELEMENTS
+    public void initialize() {    //INITIALIZE THE GUI ELEMENTS
         frame = new JFrame();
         frame.setVisible(true);
         frame.setResizable(false);
@@ -515,7 +515,7 @@ public class PathFinding {
                     solving = false;
                     break;
                 }
-                int hops = priority.get(0).getHops() + 1;    //INCREMENT THE HOPS VARIABLE
+                double hops = priority.get(0).getHops() + 1;    //INCREMENT THE HOPS VARIABLE
                 ArrayList<Node> explored = exploreNeighbors(priority.get(0), hops);    //CREATE AN ARRAYLIST OF NODES THAT WERE EXPLORED
                 if (explored.size() > 0) {
                     priority.remove(0);    //REMOVE THE NODE FROM THE QUE
@@ -540,7 +540,7 @@ public class PathFinding {
                     solving = false;
                     break;
                 }
-                int hops = priority.get(0).getHops() + 1;
+                double hops = priority.get(0).getHops() + 1;
                 ArrayList<Node> explored = exploreNeighbors(priority.get(0), hops);
                 if (explored.size() > 0) {
                     priority.remove(0);
@@ -572,7 +572,7 @@ public class PathFinding {
             return sort;
         }
 
-        public ArrayList<Node> exploreNeighbors(Node current, int hops) {    //EXPLORE NEIGHBORS
+        public ArrayList<Node> exploreNeighbors(Node current, double hops) {    //EXPLORE NEIGHBORS
             ArrayList<Node> explored = new ArrayList<Node>();    //LIST OF NODES THAT HAVE BEEN EXPLORED
             for (int a = -1; a <= 1; a++) {
                 for (int b = -1; b <= 1; b++) {
@@ -590,7 +590,7 @@ public class PathFinding {
             return explored;
         }
 
-        public void explore(Node current, int lastx, int lasty, int hops) {    //EXPLORE A NODE
+        public void explore(Node current, int lastx, int lasty, double hops) {    //EXPLORE A NODE
             if (current.getType() != 0 && current.getType() != 1)    //CHECK THAT THE NODE IS NOT THE START OR FINISH
                 current.setType(4);    //SET IT TO EXPLORED
             current.setLastNode(lastx, lasty);    //KEEP TRACK OF THE NODE THAT THIS NODE IS EXPLORED FROM
@@ -601,7 +601,7 @@ public class PathFinding {
             }
         }
 
-        public void backtrack(int lx, int ly, int hops) {    //BACKTRACK
+        public void backtrack(int lx, int ly, double hops) {    //BACKTRACK
             length = hops;
             while (hops > 1) {    //BACKTRACK FROM THE END OF THE PATH TO THE START
                 Node current = map[lx][ly];
