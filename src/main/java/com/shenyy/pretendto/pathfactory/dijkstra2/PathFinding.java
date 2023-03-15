@@ -38,7 +38,7 @@ public class PathFinding {
     private final int MSIZE = 600;
     private int CSIZE = MSIZE / cells;
     //UTIL ARRAYS
-    private String[] algorithms = {"Dijkstra", "A*", "RRT"};
+    private String[] algorithms = {"Dijkstra", "A*", "RRT", "RRT*"};
     private String[] tools = {"Start", "Finish", "Wall", "Eraser"};
     //BOOLEANS
     public boolean solving = false;
@@ -330,6 +330,12 @@ public class PathFinding {
                     break;
                 case 2:
                     staticPathFactory = new StaticPathFactory<>(null, null, null, AlgoType.RRT, null);
+                    path = staticPathFactory.createStaticPath2D();
+                    path.construct();
+                    solving = false;
+                    break;
+                case 3:
+                    staticPathFactory = new StaticPathFactory<>(null, null, null, AlgoType.RRT_STAR, null);
                     path = staticPathFactory.createStaticPath2D();
                     path.construct();
                     solving = false;
