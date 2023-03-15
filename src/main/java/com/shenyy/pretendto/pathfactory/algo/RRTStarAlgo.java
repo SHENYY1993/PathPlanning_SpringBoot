@@ -43,7 +43,6 @@ public class RRTStarAlgo<T, O> extends PathAlgo {
 
     @Override
     public void construct() {
-        //TODO 2D path construct
         System.out.println("RRT star algorithm constructing 2D path...");
         List<Node> priority = new ArrayList<>();    //CREATE A PRIORITY QUE
         priority.add(map[startx][starty]);    //ADD THE START TO THE QUE
