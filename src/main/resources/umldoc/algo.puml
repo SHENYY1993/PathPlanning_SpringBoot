@@ -1,49 +1,106 @@
 @startuml
-
-BatchController ..> BatchBizImpl
-BatchBizImpl ..> BatchServiceImpl
-ServiceImpl ..> BatchMapper
-ServiceImpl ..> Batch
-BatchMapper ..> Batch
+'===================================
+PathFactory ..> Obstacle
+PathFactory ..> Path
+Path ..> PathAlgo
+PathPlanningController ..> PathPlanningBiz
+PathPlanningBiz ..> PathFactory
 
 '===================================
-class BatchController{
-getBatchListBySFV():ResultWrapper
-addBatch():ResultWrapper
-deleteBatch():ResultWrapper
-updateBatch():ResultWrapper
-getBatchInfoById():ResultWrapper
-batchBiz: BatchBiz
+class Path2D extends Path
+class Path3D extends Path
+class CircleObstacle extends Obstacle
+class CylinderObstacle extends Obstacle
+class SphereObstacle extends Obstacle
+class StaticPathFactory<T, O> extends PathFactory
+class DynamicPathFactory<T, O> extends PathFactory
+class DijkstraAlgo extends PathAlgo
+class AStarAlgo<T, O> extends PathAlgo
+class RRTAlgo<T, O> extends PathAlgo
+class RRTStarAlgo<T, O> extends PathAlgo
+class InformedRRTStarAlgo<T, O> extends PathAlgo
+
+class PathPlanningBizImpl implements PathPlanningBiz
+
+'===================================
+abstract class PathFactory<T, O> {
+    protected T source;
+
+    protected T target;
+
+    protected List<O> obstacles;
+
+    protected AlgoType algoType;
+
+    protected Map<String, Double> params;
+
+    public PathFactory(T source, T target, List<O> obstacles, AlgoType algoType, Map<String, Double> params)
+
+    public abstract Path createStaticPath2D();
+
+    public abstract Path createDynamicPath2D();
+
+    public abstract Path createStaticPath3D();
+
+    public abstract Path createDynamicPath3D();
 }
 
-class BatchBizImpl implements BatchBiz{
-queryBatchList(): List<Batch>
-queryBatchBySeasonFieldHybird(): List<Batch>
-addBatch(): Batch
-deleteBatch(Long batchId): Boolean
-updateBatch(Long batchId, String batchParams): Batch
-queryBatchById(Long id): Batch
+abstract class Path<T, O> {
+    protected List<T> path = new ArrayList<>();
+
+    protected T source;
+
+    protected T target;
+
+    protected List<O> obstacles;
+
+    protected AlgoType algoType;
+
+    protected PathType pathType;
+
+    protected Map<String, Double> params;
+
+    public Path(T source, T target, List<O> obstacles, AlgoType algoType, PathType pathType, Map<String, Double> params)
+
+    public List<T> getPath()
+
+    public void setPath(List<T> path)
+
+    abstract void construct()
 }
 
-interface BatchBiz {
-queryBatchList(): List<Batch>
-queryBatchBySeasonFieldHybird(): List<Batch>
-addBatch(): Batch
-deleteBatch(Long batchId): Boolean
-updateBatch(Long batchId, String batchParams): Batch
-queryBatchById(Long id): Batch
+abstract class Obstacle<T> {
+    protected T location;
+    protected ObstacleType obstacleType;
+    protected double radius;
+
+    public Obstacle(T location, ObstacleType obstacleType, double radius)
 }
 
-class BatchServiceImpl extends ServiceImpl implements BatchService
-interface BatchService implements IService
-interface BatchMapper implements BaseMapper
+abstract class PathAlgo<T, O> {
+    Path<T, O> path;
 
-class Batch{
-id:Long
-date:Date
-prodSeasonId:Long
-fieldId:String
-hybridId:String
+    public PathAlgo(Path<T, O> path)
+
+    public abstract void initialize();
+
+    public abstract void construct();
 }
 
+class PathPlanningController {
+    @Resource
+    PathPlanningBiz pathPlanningBiz;
+
+    @DS("master")
+    @PostMapping(value = "/getPath")
+    public JSONObject getPath(@RequestBody JSONObject scenario)
+}
+
+interface PathPlanningBiz {
+    JSONObject getPath(JSONObject scenario);
+
+    JSONObject getPath2D(JSONObject scenario);
+
+    JSONObject getPath3D(JSONObject scenario);
+}
 @enduml
