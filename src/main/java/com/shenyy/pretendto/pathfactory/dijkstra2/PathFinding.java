@@ -44,6 +44,11 @@ public class PathFinding {
     public boolean solving = false;
     //UTIL
     public Node[][] map;
+
+    //RRT* Node List
+    public List<com.shenyy.pretendto.pathfactory.algo.Node> nodeList = new ArrayList<>();
+    public List<com.shenyy.pretendto.pathfactory.algo.Node> rrtStarPath = new ArrayList<>();
+
     Algorithm Alg = new Algorithm();
     PathFactory<Point, Obstacle<Point>> staticPathFactory;
     Random r = new Random();
@@ -120,6 +125,9 @@ public class PathFinding {
                 map[x][y] = new Node(3, x, y);    //SET ALL NODES TO EMPTY
             }
         }
+        //RRT* nodes
+        nodeList.clear();
+        rrtStarPath.clear();
         reset();    //RESET SOME VARIABLES
     }
 
@@ -137,6 +145,9 @@ public class PathFinding {
         }
         if (finishx > -1 && finishy > -1)
             map[finishx][finishy] = new Node(1, finishx, finishy);
+        //RRT* nodes
+        nodeList.clear();
+        rrtStarPath.clear();
         reset();    //RESET SOME VARIABLES
     }
 
@@ -414,9 +425,44 @@ public class PathFinding {
                             g.setColor(Color.YELLOW);
                             break;
                     }
-                    g.fillRect(x * CSIZE, y * CSIZE, CSIZE, CSIZE);
-                    g.setColor(Color.BLACK);
-                    g.drawRect(x * CSIZE, y * CSIZE, CSIZE, CSIZE);
+                    if ((curAlg != 3)
+                            || (map[x][y].getType() != 3 && map[x][y].getType() != 4 && map[x][y].getType() != 5)) {
+                        g.fillRect(x * CSIZE, y * CSIZE, CSIZE, CSIZE);
+                    }
+
+                    //绘制采样点及连线
+                    if (curAlg == 3) {
+//                        if (map[x][y].getType() == 4) {
+//                            g.setColor(Color.BLACK);
+//                            g.fillOval((int) ((x + 0.5 - 0.1) * CSIZE), (int) ((y + 0.5 - 0.1) * CSIZE), (int) (0.2 * CSIZE), (int) (0.2 * CSIZE)); //画圆点
+//                            g.setColor(Color.GREEN);
+//                            g.drawLine((int) ((map[x][y].getLastX() + 0.5) * CSIZE), (int) ((map[x][y].getLastY() + 0.5) * CSIZE), (int) ((x + 0.5) * CSIZE), (int) ((y + 0.5) * CSIZE));
+//                        } else if (map[x][y].getType() == 5) {
+//                            g.setColor(Color.RED);
+//                            g.drawLine((int) ((map[x][y].getLastX() + 0.5) * CSIZE), (int) ((map[x][y].getLastY() + 0.5) * CSIZE), (int) ((x + 0.5) * CSIZE), (int) ((y + 0.5) * CSIZE));
+//                        }
+                    } else {
+                        g.setColor(Color.BLACK);
+                        g.drawRect(x * CSIZE, y * CSIZE, CSIZE, CSIZE);
+                    }
+
+                    /**RRT* paint*/
+                    for (int i = 0; i < nodeList.size(); i++) {
+                        //Node
+                        g.setColor(Color.BLACK);
+                        g.drawOval((int) ((nodeList.get(i).getX() - 0.1) * CSIZE), (int) ((nodeList.get(i).getY() - 0.1) * CSIZE), (int) (0.2 * CSIZE), (int) (0.2 * CSIZE));
+                        //Line
+                        g.setColor(Color.GREEN);
+                        if (nodeList.get(i).getParent() != null)
+                            g.drawLine((int) ((nodeList.get(i).getParent().getX()) * CSIZE), (int) ((nodeList.get(i).getParent().getY()) * CSIZE), (int) ((nodeList.get(i).getX()) * CSIZE), (int) ((nodeList.get(i).getY()) * CSIZE));
+                    }
+
+                    for (int i = 0; i < rrtStarPath.size(); i++) {
+                        g.setColor(Color.RED);
+                        if (rrtStarPath.get(i).getParent() != null)
+                            g.drawLine((int) ((rrtStarPath.get(i).getParent().getX()) * CSIZE), (int) ((rrtStarPath.get(i).getParent().getY()) * CSIZE), (int) ((rrtStarPath.get(i).getX()) * CSIZE), (int) ((rrtStarPath.get(i).getY()) * CSIZE));
+                    }
+
                     //DEBUG STUFF
 					/*
 					if(curAlg == 1)

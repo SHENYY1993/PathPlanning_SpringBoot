@@ -1,46 +1,62 @@
 package com.shenyy.pretendto.pathfactory.algo;
 
 import com.shenyy.pretendto.pathfactory.Path;
+import com.shenyy.pretendto.pathfactory.dijkstra2.PathFinding;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 public class RRTStarAlgo2 extends PathAlgo {
     public static void main(String[] args) {
-//        // 创建地图
+        // 创建地图
 //        Map map = new Map(800, 600);
-//
-//        // 添加障碍物
-//        ArrayList<Node> obstacles = new ArrayList<Node>();
-//        obstacles.add(new Node(300, 300, 50));
-//        obstacles.add(new Node(500, 400, 50));
-//        obstacles.add(new Node(600, 200, 50));
+
+        // 添加障碍物
+        ArrayList<Node> obstacles = new ArrayList<Node>();
+        obstacles.add(new Node(300, 300, 50));
+        obstacles.add(new Node(500, 400, 50));
+        obstacles.add(new Node(600, 200, 50));
 //        map.setObstacles(obstacles);
-//
-//        // 创建RRT*算法对象
-//        RRTStar rrt = new RRTStar(map, 10);
-//
-//        // 设置起点和终点
-//        Node start = new Node(100, 100);
-//        Node goal = new Node(700, 500);
-//
-//        // 运行RRT*算法
-//        ArrayList<Node> path = rrt.findPath(start, goal);
-//
-//        // 绘制路径和地图
+
+        // 创建RRT*算法对象
+//        RRTStarAlgo2 rrt = new RRTStarAlgo2(map, 10);
+
+        // 设置起点和终点
+        Node start = new Node(100, 100);
+        Node goal = new Node(700, 500);
+
+        // 运行RRT*算法
+        ArrayList<Node> path = RRTStarAlgo2.search(start, goal, obstacles, 0, 800, 0, 600);
+        for (Node node :
+                path) {
+            System.out.println("[" + node.getX() + "," + node.getY() + "]");
+        }
+
+        // 绘制路径和地图
 //        map.drawPath(path);
 //        map.drawObstacles(obstacles);
 //        map.show();
     }
 
-    private static final double SEARCH_RADIUS = 50.0; // 搜索半径
-    private static final double GOAL_RADIUS = 10.0; // 目标半径
-    private static final int MAX_ITERATIONS = 10000; // 最大迭代次数
+    private static final double LEN = 0.5; //补偿半格长度
+
+    private static double SEARCH_RADIUS = 50.0; // 搜索半径
+    private static double GOAL_RADIUS = 10.0; // 目标半径
+    private static final int MAX_ITERATIONS = 1000; // 最大迭代次数
     private static final double GAMMA = 1.0; // 权重因子
     private static final double DELTA_Q = 1.0; // 步长
     private static final Random random = new Random(); // 随机数生成器
-    private static final ArrayList<Node> obstacles = new ArrayList<Node>(); // 障碍物集合
+    private static ArrayList<Node> obstacles = new ArrayList<Node>(); // 障碍物集合
+    private static Node start;
+    private static Node goal;
+    private int xMin = -1;
+    private int xMax = -1;
+    private int yMin = -1;
+    private int yMax = -1;
+    private static List<Node> nodes;
+    private static boolean findOne = false;
 
     public RRTStarAlgo2(Path path) {
         super(path);
@@ -48,20 +64,54 @@ public class RRTStarAlgo2 extends PathAlgo {
 
     @Override
     public void initialize() {
+        // 设置起点和终点
+        start = new Node(PathFinding.getInstance().startx + LEN, PathFinding.getInstance().starty + LEN);
+        goal = new Node(PathFinding.getInstance().finishx + LEN, PathFinding.getInstance().finishy + LEN);
 
+        // 添加障碍物
+        com.shenyy.pretendto.pathfactory.dijkstra2.Node[][] map = PathFinding.getInstance().map;
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[0].length; j++) {
+                if (map[i][j].getType() == 2) {
+                    obstacles.add(new Node(map[i][j].getX() + LEN, map[i][j].getY() + LEN, 0.5 * Math.sqrt(2)));
+                }
+            }
+        }
+
+        // 设置采样范围
+        xMin = 0;
+        xMax = PathFinding.getInstance().cells;
+        yMin = 0;
+        yMax = PathFinding.getInstance().cells;
+
+        //相关参数
+        SEARCH_RADIUS = PathFinding.getInstance().cells * 0.2;
+        GOAL_RADIUS = PathFinding.getInstance().cells * 0.05;
+
+        nodes = PathFinding.getInstance().nodeList;
     }
 
     @Override
     public void construct() {// 创建地图
+        // 运行RRT*算法
+        ArrayList<Node> path = RRTStarAlgo2.search(start, goal, obstacles, xMin, xMax, yMin, yMax);
+        PathFinding.getInstance().rrtStarPath = path;
+
+        PathFinding.getInstance().solving = false;
     }
 
     private static Node generateRandomNode(double xMin, double xMax, double yMin, double yMax) {
-        double x = xMin + (xMax - xMin) * random.nextDouble();
-        double y = yMin + (yMax - yMin) * random.nextDouble();
+        double x = goal.getX();
+        double y = goal.getY();
+        if (Math.random() > 0.1) {
+            x = xMin + (xMax - xMin) * random.nextDouble();
+            y = yMin + (yMax - yMin) * random.nextDouble();
+        }
+
         return new Node(x, y);
     }
 
-    private static Node getNearestNode(Node randomNode, ArrayList<Node> nodes) {
+    private static Node getNearestNode(Node randomNode, List<Node> nodes) {
         Node nearestNode = null;
         double minDistance = Double.MAX_VALUE;
         for (Node node : nodes) {
@@ -74,7 +124,7 @@ public class RRTStarAlgo2 extends PathAlgo {
         return nearestNode;
     }
 
-    private static Node getBestParent(Node newNode, ArrayList<Node> nodes) {
+    private static Node getBestParent(Node newNode, List<Node> nodes) {
         Node bestParent = newNode.getParent();
         double minCost = Double.MAX_VALUE;
         ArrayList<Node> neighbors = getNeighbors(newNode, nodes);
@@ -89,7 +139,7 @@ public class RRTStarAlgo2 extends PathAlgo {
         return bestParent;
     }
 
-    private static ArrayList<Node> getNeighbors(Node newNode, ArrayList<Node> nodes) {
+    private static ArrayList<Node> getNeighbors(Node newNode, List<Node> nodes) {
         ArrayList<Node> neighbors = new ArrayList<Node>();
         for (Node node : nodes) {
             if (node.getDistance(newNode) < SEARCH_RADIUS) {
@@ -99,7 +149,7 @@ public class RRTStarAlgo2 extends PathAlgo {
         return neighbors;
     }
 
-    private static void rewire(Node newNode, ArrayList<Node> nodes) {
+    private static void rewire(Node newNode, List<Node> nodes) {
         ArrayList<Node> neighbors = getNeighbors(newNode, nodes);
         for (Node neighbor : neighbors) {
             if (newNode.isCollisionFree(neighbor, obstacles)) {
@@ -107,16 +157,16 @@ public class RRTStarAlgo2 extends PathAlgo {
                 if (cost < neighbor.getCost()) {
                     neighbor.setParent(newNode);
                     neighbor.setCost(cost);
+
+                    /**GUI Update*/
+                    PathFinding.getInstance().Update();
+                    PathFinding.getInstance().delay();
                 }
             }
         }
     }
 
     public static ArrayList<Node> search(Node start, Node goal, ArrayList<Node> obstacles, double xMin, double xMax, double yMin, double yMax) {
-        RRTStarAlgo2.obstacles.clear();
-        RRTStarAlgo2.obstacles.addAll(obstacles);
-
-        ArrayList<Node> nodes = new ArrayList<Node>();
         nodes.add(start);
 
         for (int i = 0; i < MAX_ITERATIONS; i++) {
@@ -126,20 +176,52 @@ public class RRTStarAlgo2 extends PathAlgo {
 
             if (newNode.isCollisionFree(nearestNode, obstacles)) {
                 Node bestParent = getBestParent(newNode, nodes);
-                newNode.setParent(bestParent);
-                newNode.setCost(bestParent.getCost() + bestParent.getDistance(newNode));
-
+                newNode.setParent(nearestNode);
                 nodes.add(newNode);
+                /**GUI Update*/
+                PathFinding.getInstance().Update();
+                PathFinding.getInstance().delay();
+
+//                Node bestParent = getBestParent(newNode, nodes);
+//                newNode.setParent(bestParent);
+//                newNode.setCost(bestParent.getCost() + bestParent.getDistance(newNode));
+//                nodes.add(newNode);
+                nodes.get(nodes.size() - 1).setParent(bestParent);
+                nodes.get(nodes.size() - 1).setCost(bestParent.getCost() + bestParent.getDistance(newNode));
+                /**GUI Update*/
+                PathFinding.getInstance().Update();
+                PathFinding.getInstance().delay();
+
                 rewire(newNode, nodes);
+                /**GUI Update*/
+                PathFinding.getInstance().Update();
+                PathFinding.getInstance().delay();
 
                 if (newNode.getDistance(goal) < GOAL_RADIUS) {
                     goal.setParent(newNode);
                     goal.setCost(newNode.getCost() + newNode.getDistance(goal));
                     nodes.add(goal);
                     rewire(goal, nodes);
-                    return getPath(start, goal);
+
+                    /**GUI Update*/
+                    PathFinding.getInstance().Update();
+                    PathFinding.getInstance().delay();
+
+                    PathFinding.getInstance().rrtStarPath = getPath(start, goal);
+                    findOne = true;
+
+                    /**输出路径*/
+                    System.out.print("Length: " + PathFinding.getInstance().rrtStarPath.get(PathFinding.getInstance().rrtStarPath.size() - 1).getCost() + " | ");
+                    for (Node node :
+                            PathFinding.getInstance().rrtStarPath) {
+                        System.out.print("(" + node.getX() + "," + node.getY() + ")");
+                    }
+                    System.out.println();
                 }
             }
+        }
+        if (findOne) {
+            return getPath(start, goal);
         }
         return null; // 未找到路径
     }
@@ -153,106 +235,5 @@ public class RRTStarAlgo2 extends PathAlgo {
         }
         Collections.reverse(path);
         return path;
-    }
-}
-
-class Node {
-    private double x;
-    private double y;
-    private Node parent;
-    private double cost;
-    private double radius = -1;
-
-    public Node(double x, double y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    public Node(double x, double y, double radius) {
-        this.x = x;
-        this.y = y;
-        this.radius = radius;
-    }
-
-    public double getX() {
-        return x;
-    }
-
-    public double getY() {
-        return y;
-    }
-
-    public Node getParent() {
-        return parent;
-    }
-
-    public void setParent(Node parent) {
-        this.parent = parent;
-    }
-
-    public double getCost() {
-        return cost;
-    }
-
-    public void setCost(double cost) {
-        this.cost = cost;
-    }
-
-    public double getDistance(Node other) {
-        double dx = x - other.x;
-        double dy = y - other.y;
-        return Math.sqrt(dx * dx + dy * dy);
-    }
-
-    public Node moveTowards(Node other, double maxDistance) {
-        double distance = getDistance(other);
-        if (distance <= maxDistance) {
-            return other;
-        } else {
-            double ratio = maxDistance / distance;
-            double dx = other.x - x;
-            double dy = other.y - y;
-            return new Node(x + dx * ratio, y + dy * ratio);
-        }
-    }
-
-    public boolean isCollisionFree(Node other, ArrayList<Node> obstacles) {
-        for (Node obstacle : obstacles) {
-            if (isSegmentInCircle(this, other, obstacle, obstacle.getRadius())) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private double getRadius() {
-        return radius;
-    }
-
-    private boolean isSegmentInCircle(Node p1, Node p2, Node c, double r) {
-        double dx = p2.x - p1.x;
-        double dy = p2.y - p1.y;
-        double a = dx * dx + dy * dy;
-        double b = 2 * (dx * (p1.x - c.x) + dy * (p1.y - c.y));
-        double cc = c.x * c.x + c.y * c.y + p1.x * p1.x + p1.y * p1.y - 2 * (c.x * p1.x + c.y * p1.y) - r * r;
-        double deter = b * b - 4 * a * cc;
-
-        if (deter < 0) {
-            return false;
-        }
-
-        double e = Math.sqrt(deter);
-        double u1 = (-b + e) / (2 * a);
-        double u2 = (-b - e) / (2 * a);
-
-        if (u1 >= 0 && u1 <= 1) {
-            return true;
-        }
-
-        if (u2 >= 0 && u2 <= 1) {
-            return true;
-        }
-
-        return false;
     }
 }
