@@ -170,6 +170,9 @@ public class RRTStarAlgo2 extends PathAlgo {
         nodes.add(start);
 
         for (int i = 0; i < MAX_ITERATIONS; i++) {
+            /**GUI Update*/
+            PathFinding.getInstance().checks = i;
+
             Node randomNode = generateRandomNode(xMin, xMax, yMin, yMax);
             Node nearestNode = getNearestNode(randomNode, nodes);
             Node newNode = nearestNode.moveTowards(randomNode, DELTA_Q);
@@ -204,6 +207,7 @@ public class RRTStarAlgo2 extends PathAlgo {
                     rewire(goal, nodes);
 
                     /**GUI Update*/
+                    PathFinding.getInstance().length = goal.getCost();
                     PathFinding.getInstance().Update();
                     PathFinding.getInstance().delay();
 
@@ -211,12 +215,13 @@ public class RRTStarAlgo2 extends PathAlgo {
                     findOne = true;
 
                     /**输出路径*/
-                    System.out.print("Length: " + PathFinding.getInstance().rrtStarPath.get(PathFinding.getInstance().rrtStarPath.size() - 1).getCost() + " | ");
+                    System.out.print("Length: " + goal.getCost() + " | ");
                     for (Node node :
                             PathFinding.getInstance().rrtStarPath) {
                         System.out.print("(" + node.getX() + "," + node.getY() + ")");
                     }
                     System.out.println();
+                    return getPath(start, goal);
                 }
             }
         }

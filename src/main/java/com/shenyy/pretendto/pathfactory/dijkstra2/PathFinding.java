@@ -231,7 +231,7 @@ public class PathFinding {
         toolP.add(checkL);
         space += buff;
 
-        lengthL.setBounds(15, space, 100, 25);
+        lengthL.setBounds(15, space, 120, 25);
         toolP.add(lengthL);
         space += buff;
 
