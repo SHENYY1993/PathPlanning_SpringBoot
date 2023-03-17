@@ -64,6 +64,7 @@ public class RRTStarAlgo2 extends PathAlgo {
 
     @Override
     public void initialize() {
+        System.out.println("RRT star algorithm initializing...");
         // 设置起点和终点
         start = new Node(PathFinding.getInstance().startx + LEN, PathFinding.getInstance().starty + LEN);
         goal = new Node(PathFinding.getInstance().finishx + LEN, PathFinding.getInstance().finishy + LEN);
@@ -93,6 +94,7 @@ public class RRTStarAlgo2 extends PathAlgo {
 
     @Override
     public void construct() {// 创建地图
+        System.out.println("RRT star algorithm constructing 2D path...");
         // 运行RRT*算法
         ArrayList<Node> path = RRTStarAlgo2.search(start, goal, obstacles, xMin, xMax, yMin, yMax);
         PathFinding.getInstance().rrtStarPath = path;
