@@ -97,7 +97,7 @@ public class RRTStarAlgo2 extends PathAlgo {
         System.out.println("RRT star algorithm constructing 2D path...");
         // 运行RRT*算法
         ArrayList<Node> path = RRTStarAlgo2.search(start, goal, obstacles, xMin, xMax, yMin, yMax);
-        PathFinding.getInstance().rrtStarPath = path;
+        PathFinding.getInstance().linePath = path;
 
         PathFinding.getInstance().solving = false;
     }
@@ -216,13 +216,13 @@ public class RRTStarAlgo2 extends PathAlgo {
                     PathFinding.getInstance().Update();
                     PathFinding.getInstance().delay();
 
-                    PathFinding.getInstance().rrtStarPath = getPath(start, goal);
+                    PathFinding.getInstance().linePath = getPath(start, goal);
                     findOne = true;
 
                     /**输出路径*/
                     System.out.print("Length: " + goal.getCost() + " | ");
                     for (Node node :
-                            PathFinding.getInstance().rrtStarPath) {
+                            PathFinding.getInstance().linePath) {
                         System.out.print("(" + node.getX() + "," + node.getY() + ")");
                     }
                     System.out.println();

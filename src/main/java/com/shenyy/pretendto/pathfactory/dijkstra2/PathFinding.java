@@ -1,9 +1,7 @@
 package com.shenyy.pretendto.pathfactory.dijkstra2;
 
 import com.shenyy.pretendto.pathfactory.*;
-import com.shenyy.pretendto.pathfactory.algo.DijkstraAlgo;
 import com.shenyy.pretendto.pathfactory.enumtype.AlgoType;
-import javafx.geometry.Point2D;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -33,12 +31,12 @@ public class PathFinding {
     public int checks = 0;
     public double length = 0;
     public int curAlg = 0;
-    private int WIDTH = 850;
+    private int WIDTH = 1050;
     private final int HEIGHT = 650;
     private final int MSIZE = 600;
     private int CSIZE = MSIZE / cells;
     //UTIL ARRAYS
-    private String[] algorithms = {"Dijkstra", "A*", "RRT", "RRT*"};
+    private String[] algorithms = {"Dijkstra", "A*", "RRT", "RRT*", "ACO"};
     private String[] tools = {"Start", "Finish", "Wall", "Eraser"};
     //BOOLEANS
     public boolean solving = false;
@@ -47,7 +45,8 @@ public class PathFinding {
 
     //RRT* Node List
     public List<com.shenyy.pretendto.pathfactory.algo.Node> nodeList = new ArrayList<>();
-    public List<com.shenyy.pretendto.pathfactory.algo.Node> rrtStarPath = new ArrayList<>();
+    //draw final path with line
+    public List<com.shenyy.pretendto.pathfactory.algo.Node> linePath = new ArrayList<>();
 
     Algorithm Alg = new Algorithm();
     PathFactory<Point, Obstacle<Point>> staticPathFactory;
@@ -78,6 +77,7 @@ public class PathFinding {
     JComboBox toolBx = new JComboBox(tools);
     //PANELS
     JPanel toolP = new JPanel();
+    JPanel algoInfoP = new JPanel();
     //CANVAS
     Map canvas;
     //BORDER
@@ -127,7 +127,7 @@ public class PathFinding {
         }
         //RRT* nodes
         nodeList.clear();
-        rrtStarPath.clear();
+        linePath.clear();
         reset();    //RESET SOME VARIABLES
     }
 
@@ -147,7 +147,7 @@ public class PathFinding {
             map[finishx][finishy] = new Node(1, finishx, finishy);
         //RRT* nodes
         nodeList.clear();
-        rrtStarPath.clear();
+        linePath.clear();
         reset();    //RESET SOME VARIABLES
     }
 
@@ -162,11 +162,13 @@ public class PathFinding {
         frame.getContentPane().setLayout(null);
 
         toolP.setBorder(BorderFactory.createTitledBorder(loweredetched, "Controls"));
+        algoInfoP.setBorder(BorderFactory.createTitledBorder(loweredetched, "Info"));
         int space = 25;
         int buff = 45;
 
         toolP.setLayout(null);
         toolP.setBounds(10, 10, 210, 600);
+        algoInfoP.setBounds(860, 10, 200, 600);
 
         searchB.setBounds(40, space, 120, 25);
         toolP.add(searchB);
@@ -351,6 +353,12 @@ public class PathFinding {
                     path.construct();
                     solving = false;
                     break;
+                case 4:
+                    staticPathFactory = new StaticPathFactory<>(null, null, null, AlgoType.ACO, null);
+                    path = staticPathFactory.createStaticPath2D();
+                    path.construct();
+                    solving = false;
+                    break;
             }
         }
         pause();    //PAUSE STATE
@@ -425,13 +433,13 @@ public class PathFinding {
                             g.setColor(Color.YELLOW);
                             break;
                     }
-                    if ((curAlg != 3)
+                    if ((curAlg != 3 && curAlg != 4)
                             || (map[x][y].getType() != 3 && map[x][y].getType() != 4 && map[x][y].getType() != 5)) {
                         g.fillRect(x * CSIZE, y * CSIZE, CSIZE, CSIZE);
                     }
 
                     //绘制采样点及连线
-                    if (curAlg == 3) {
+                    if (curAlg == 3 || curAlg == 4) {
 //                        if (map[x][y].getType() == 4) {
 //                            g.setColor(Color.BLACK);
 //                            g.fillOval((int) ((x + 0.5 - 0.1) * CSIZE), (int) ((y + 0.5 - 0.1) * CSIZE), (int) (0.2 * CSIZE), (int) (0.2 * CSIZE)); //画圆点
@@ -457,10 +465,10 @@ public class PathFinding {
                             g.drawLine((int) ((nodeList.get(i).getParent().getX()) * CSIZE), (int) ((nodeList.get(i).getParent().getY()) * CSIZE), (int) ((nodeList.get(i).getX()) * CSIZE), (int) ((nodeList.get(i).getY()) * CSIZE));
                     }
 
-                    for (int i = 0; i < rrtStarPath.size(); i++) {
+                    for (int i = 0; i < linePath.size(); i++) {
                         g.setColor(Color.RED);
-                        if (rrtStarPath.get(i).getParent() != null)
-                            g.drawLine((int) ((rrtStarPath.get(i).getParent().getX()) * CSIZE), (int) ((rrtStarPath.get(i).getParent().getY()) * CSIZE), (int) ((rrtStarPath.get(i).getX()) * CSIZE), (int) ((rrtStarPath.get(i).getY()) * CSIZE));
+                        if (linePath.get(i).getParent() != null)
+                            g.drawLine((int) ((linePath.get(i).getParent().getX()) * CSIZE), (int) ((linePath.get(i).getParent().getY()) * CSIZE), (int) ((linePath.get(i).getX()) * CSIZE), (int) ((linePath.get(i).getY()) * CSIZE));
                     }
 
                     //DEBUG STUFF
