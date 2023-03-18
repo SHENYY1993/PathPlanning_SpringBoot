@@ -44,7 +44,7 @@ public class RRTStarAlgo2 extends PathAlgo {
 
     private static double SEARCH_RADIUS = 50.0; // 搜索半径
     private static double GOAL_RADIUS = 10.0; // 目标半径
-    private static final int MAX_ITERATIONS = 1000; // 最大迭代次数
+    private static final int MAX_ITERATIONS = 5000; // 最大迭代次数
     private static final double GAMMA = 1.0; // 权重因子
     private static final double DELTA_Q = 1.0; // 步长
     private static final Random random = new Random(); // 随机数生成器
@@ -172,6 +172,9 @@ public class RRTStarAlgo2 extends PathAlgo {
         nodes.add(start);
 
         for (int i = 0; i < MAX_ITERATIONS; i++) {
+            if (!PathFinding.getInstance().solving) {
+                break;
+            }
             /**GUI Update*/
             PathFinding.getInstance().checks = i;
 

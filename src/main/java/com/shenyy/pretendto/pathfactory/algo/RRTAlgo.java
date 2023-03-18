@@ -38,7 +38,7 @@ public class RRTAlgo<T, O> extends PathAlgo {
         finishx = PathFinding.getInstance().finishx;
         finishy = PathFinding.getInstance().finishy;
         solving = PathFinding.getInstance().solving;
-        gen = PathFinding.getInstance().cells * 10;
+        gen = PathFinding.getInstance().cells * 50;
     }
 
     @Override
