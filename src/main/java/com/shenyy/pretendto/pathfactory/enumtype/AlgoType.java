@@ -7,4 +7,5 @@ public enum AlgoType {
     RRT_STAR,
     INFORMED_RRT,
     ACO,
+    GA,
 }

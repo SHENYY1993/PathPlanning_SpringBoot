@@ -42,7 +42,7 @@ public class PathFinding {
     public double rho = 0.2;
 
     //UTIL ARRAYS
-    private String[] algorithms = {"Dijkstra", "A*", "RRT", "RRT*", "ACO"};
+    private String[] algorithms = {"Dijkstra", "A*", "RRT", "RRT*", "ACO", "GA"};
     private String[] tools = {"Start", "Finish", "Wall", "Eraser"};
     //BOOLEANS
     public boolean solving = false;
@@ -62,8 +62,8 @@ public class PathFinding {
     JSlider speed = new JSlider(0, 500, delay);
     JSlider obstacles = new JSlider(1, 100, 50);
     //SLIDERS——ACO
-    JSlider alphaSL = new JSlider(1, 4, 1);
-    JSlider betaSL = new JSlider(0, 5, 2);
+    JSlider alphaSL = new JSlider(0, 100, 3);
+    JSlider betaSL = new JSlider(0, 100, 20);
     JSlider rhoSL = new JSlider(2, 5, 2);
     //LABELS
     JLabel algL = new JLabel("Algorithms");
@@ -370,11 +370,11 @@ public class PathFinding {
         });
         //ACO
         alphaSL.addChangeListener((e) -> {
-            alpha = alphaSL.getValue();
+            alpha = alphaSL.getValue() / 10;
             Update();
         });
         betaSL.addChangeListener((e) -> {
-            beta = betaSL.getValue();
+            beta = betaSL.getValue() / 10;
             Update();
         });
         rhoSL.addChangeListener((e) -> {
@@ -416,6 +416,12 @@ public class PathFinding {
                     break;
                 case 4:
                     staticPathFactory = new StaticPathFactory<>(null, null, null, AlgoType.ACO, null);
+                    path = staticPathFactory.createStaticPath2D();
+                    path.construct();
+                    solving = false;
+                    break;
+                case 5:
+                    staticPathFactory = new StaticPathFactory<>(null, null, null, AlgoType.GA, null);
                     path = staticPathFactory.createStaticPath2D();
                     path.construct();
                     solving = false;

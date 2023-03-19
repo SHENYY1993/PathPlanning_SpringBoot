@@ -37,6 +37,9 @@ public class Path2D extends Path {
             case ACO:
                 pathAlgo = new ACOAlgo(this, 1000, 1, 2, 0.2);
                 break;
+            case GA:
+                pathAlgo = new GeneticAlgo(this);
+                break;
             default:
                 pathAlgo = new InformedRRTStarAlgo<>(this);
                 break;
