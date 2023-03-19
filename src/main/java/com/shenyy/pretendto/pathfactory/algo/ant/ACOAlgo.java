@@ -41,6 +41,7 @@ public class ACOAlgo extends PathAlgo {
 
     /**
      * constructor of ACO
+     *
      * @param g 运行代数
      * @param a alpha（信息素重要程度）
      * @param b beta（启发式因子重要程度）
@@ -64,9 +65,12 @@ public class ACOAlgo extends PathAlgo {
         antNum = (int) (cityNum * 1.5);
         ants = new Ant[antNum];
         MAX_GEN = g;
-        alpha = a;
-        beta = b;
-        rho = r;
+//        alpha = a;
+//        beta = b;
+//        rho = r;
+        alpha = PathFinding.getInstance().alpha;
+        beta = PathFinding.getInstance().beta;
+        rho = PathFinding.getInstance().rho;
     }
 
     @Override
@@ -200,10 +204,10 @@ public class ACOAlgo extends PathAlgo {
             // 更新这只蚂蚁的信息数变化矩阵，对称矩阵
             for (int j = 0; j < cityNum; j++) {
                 ants[i].getDelta()[ants[i].getTabu().get(j).intValue()][ants[i]
-                        .getTabu().get(j + 1).intValue()] = (float) (1. / ants[i]
+                        .getTabu().get(j + 1).intValue()] = (1. / ants[i]
                         .getTourLength());
                 ants[i].getDelta()[ants[i].getTabu().get(j + 1).intValue()][ants[i]
-                        .getTabu().get(j).intValue()] = (float) (1. / ants[i]
+                        .getTabu().get(j).intValue()] = (1. / ants[i]
                         .getTourLength());
             }
             for (int j = 0; j < cityNum; j++) {
