@@ -36,11 +36,10 @@ public class GeneticAlgo extends PathAlgo {
             }
         }
 
-        maxGenerations = 1000;
-        populationSize = 100;
-
-        crossoverRate = PathFinding.getInstance().param2;
-        mutationRate = PathFinding.getInstance().param3;
+        maxGenerations = PathFinding.getInstance().MAX_GEN;
+        crossoverRate = PathFinding.getInstance().param1;
+        mutationRate = PathFinding.getInstance().param2;
+        populationSize = (int) PathFinding.getInstance().param3;
     }
 
     @Override
