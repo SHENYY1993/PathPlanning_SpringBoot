@@ -1,6 +1,7 @@
 package com.shenyy.pretendto.pathfactory;
 
 import com.shenyy.pretendto.pathfactory.algo.*;
+import com.shenyy.pretendto.pathfactory.algo.ant.ACOAlgo;
 import com.shenyy.pretendto.pathfactory.enumtype.AlgoType;
 import com.shenyy.pretendto.pathfactory.enumtype.PathType;
 import javafx.geometry.Point2D;
@@ -27,10 +28,17 @@ public class Path2D extends Path {
                 pathAlgo = new RRTAlgo<>(this);
                 break;
             case RRT_STAR:
-                pathAlgo = new RRTStarAlgo<>(this);
+//                pathAlgo = new RRTStarAlgo<>(this);
+                pathAlgo = new RRTStarAlgo2(this);
                 break;
             case INFORMED_RRT:
                 pathAlgo = new InformedRRTStarAlgo<>(this);
+                break;
+            case ACO:
+                pathAlgo = new ACOAlgo(this, 1000, 1, 2, 0.2);
+                break;
+            case GA:
+                pathAlgo = new GeneticAlgo(this);
                 break;
             default:
                 pathAlgo = new InformedRRTStarAlgo<>(this);

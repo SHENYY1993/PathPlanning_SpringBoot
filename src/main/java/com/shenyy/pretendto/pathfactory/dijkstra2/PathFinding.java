@@ -1,9 +1,7 @@
 package com.shenyy.pretendto.pathfactory.dijkstra2;
 
 import com.shenyy.pretendto.pathfactory.*;
-import com.shenyy.pretendto.pathfactory.algo.DijkstraAlgo;
 import com.shenyy.pretendto.pathfactory.enumtype.AlgoType;
-import javafx.geometry.Point2D;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -33,24 +31,39 @@ public class PathFinding {
     public int checks = 0;
     public double length = 0;
     public int curAlg = 0;
-    private int WIDTH = 850;
+    private int WIDTH = 1200;
     private final int HEIGHT = 650;
     private final int MSIZE = 600;
     private int CSIZE = MSIZE / cells;
+
+    //VARIABLES (ACO, GA)
+    public double param1 = 1;
+    public double param2 = 2;
+    public double param3 = 0.2;
+
     //UTIL ARRAYS
-    private String[] algorithms = {"Dijkstra", "A*", "RRT", "RRT*"};
+    private String[] algorithms = {"Dijkstra", "A*", "RRT", "RRT*", "ACO", "GA"};
     private String[] tools = {"Start", "Finish", "Wall", "Eraser"};
     //BOOLEANS
     public boolean solving = false;
     //UTIL
     public Node[][] map;
-    Algorithm Alg = new Algorithm();
+
+    //RRT* Node List
+    public List<com.shenyy.pretendto.pathfactory.algo.Node> nodeList = new ArrayList<>();
+    //draw final path with line
+    public List<com.shenyy.pretendto.pathfactory.algo.Node> linePath = new ArrayList<>();
+
     PathFactory<Point, Obstacle<Point>> staticPathFactory;
     Random r = new Random();
     //SLIDERS
     JSlider size = new JSlider(1, 5, 2);
     JSlider speed = new JSlider(0, 500, delay);
     JSlider obstacles = new JSlider(1, 100, 50);
+    //SLIDERS——ACO
+    JSlider param1SL = new JSlider(0, 100, 3);
+    JSlider param2SL = new JSlider(0, 100, 20);
+    JSlider param3SL = new JSlider(2, 5, 2);
     //LABELS
     JLabel algL = new JLabel("Algorithms");
     JLabel toolL = new JLabel("Toolbox");
@@ -62,6 +75,15 @@ public class PathFinding {
     JLabel densityL = new JLabel(obstacles.getValue() + "%");
     JLabel checkL = new JLabel("Checks: " + checks);
     JLabel lengthL = new JLabel("Path Length: " + length);
+    //LABELS(ACO, GA)
+    private int widthL = 80;
+    private int heightL = 25;
+    JLabel param1L = new JLabel("alpha");
+    JLabel param2L = new JLabel("beta");
+    JLabel param3L = new JLabel("rho");
+    JLabel param1ValueL = new JLabel(String.valueOf(param1));
+    JLabel param2ValueL = new JLabel(String.valueOf(param2));
+    JLabel param3ValueL = new JLabel(String.valueOf(param3));
     //BUTTONS
     JButton searchB = new JButton("Start Search");
     JButton resetB = new JButton("Reset");
@@ -73,18 +95,13 @@ public class PathFinding {
     JComboBox toolBx = new JComboBox(tools);
     //PANELS
     JPanel toolP = new JPanel();
+    JPanel algoInfoP = new JPanel();
     //CANVAS
     Map canvas;
     //BORDER
     Border loweredetched = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 
     private static PathFinding instance;
-
-//    public static void main(String[] args) {    //MAIN METHOD
-//        getInstance();
-//        instance.clearMap();
-//        instance.initialize();
-//    }
 
     public PathFinding() {    //CONSTRUCTOR
     }
@@ -120,6 +137,9 @@ public class PathFinding {
                 map[x][y] = new Node(3, x, y);    //SET ALL NODES TO EMPTY
             }
         }
+        //RRT* nodes
+        nodeList.clear();
+        linePath.clear();
         reset();    //RESET SOME VARIABLES
     }
 
@@ -137,6 +157,9 @@ public class PathFinding {
         }
         if (finishx > -1 && finishy > -1)
             map[finishx][finishy] = new Node(1, finishx, finishy);
+        //RRT* nodes
+        nodeList.clear();
+        linePath.clear();
         reset();    //RESET SOME VARIABLES
     }
 
@@ -220,14 +243,46 @@ public class PathFinding {
         toolP.add(checkL);
         space += buff;
 
-        lengthL.setBounds(15, space, 100, 25);
+        lengthL.setBounds(15, space, 120, 25);
         toolP.add(lengthL);
         space += buff;
 
         creditB.setBounds(40, space, 120, 25);
         toolP.add(creditB);
 
+        /**ACO panel*/
+        algoInfoP.setLayout(null);
+        algoInfoP.setBounds(850, 10, 300, 600);
+        algoInfoP.setBorder(BorderFactory.createTitledBorder(loweredetched, "Info"));
+
+        space = 25;
+        param1L.setBounds(15, space, widthL, heightL);
+        algoInfoP.add(param1L);
+        param1SL.setMajorTickSpacing(10);
+        param1SL.setBounds(90, space, 100, heightL);
+        algoInfoP.add(param1SL);
+        param1ValueL.setBounds(200, space, widthL, heightL);
+        algoInfoP.add(param1ValueL);
+        space += buff;
+        param2L.setBounds(15, space, widthL, heightL);
+        algoInfoP.add(param2L);
+        param2SL.setMajorTickSpacing(10);
+        param2SL.setBounds(90, space, 100, heightL);
+        algoInfoP.add(param2SL);
+        param2ValueL.setBounds(200, space, widthL, heightL);
+        algoInfoP.add(param2ValueL);
+        space += buff;
+        param3L.setBounds(15, space, widthL, heightL);
+        algoInfoP.add(param3L);
+        param3SL.setMajorTickSpacing(10);
+        param3SL.setBounds(90, space, 100, heightL);
+        algoInfoP.add(param3SL);
+        param3ValueL.setBounds(200, space, widthL, heightL);
+        algoInfoP.add(param3ValueL);
+
+
         frame.getContentPane().add(toolP);
+        frame.getContentPane().add(algoInfoP);
 
         canvas = new Map();
         canvas.setBounds(230, 10, MSIZE + 1, MSIZE + 1);
@@ -237,8 +292,9 @@ public class PathFinding {
             @Override
             public void actionPerformed(ActionEvent e) {
                 reset();
-                if ((startx > -1 && starty > -1) && (finishx > -1 && finishy > -1))
+                if ((startx > -1 && starty > -1) && (finishx > -1 && finishy > -1)) {
                     solving = true;
+                }
             }
         });
         resetB.addActionListener(new ActionListener() {
@@ -266,6 +322,25 @@ public class PathFinding {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 curAlg = algorithmsBx.getSelectedIndex();
+                if (curAlg == 4) {
+                    startx = 0;
+                    starty = 0;
+                    finishx = 0;
+                    finishy = 0;
+
+                    param1L.setText("alpha");
+                    param2L.setText("beta");
+                    param3L.setText("rho");
+                } else if (curAlg == 5) {
+                    startx = 0;
+                    starty = 0;
+                    finishx = 0;
+                    finishy = 0;
+
+                    param1L.setText("crossover");
+                    param2L.setText("mutation");
+                    param3L.setText("param3");
+                }
                 Update();
             }
         });
@@ -307,6 +382,19 @@ public class PathFinding {
                         + "          Build Date:  March 28, 2018   ", "Credit", JOptionPane.PLAIN_MESSAGE, new ImageIcon(""));
             }
         });
+        //ACO
+        param1SL.addChangeListener((e) -> {
+            param1 = param1SL.getValue() / 10;
+            Update();
+        });
+        param2SL.addChangeListener((e) -> {
+            param2 = param2SL.getValue() / 10;
+            Update();
+        });
+        param3SL.addChangeListener((e) -> {
+            param3 = (double) param3SL.getValue() / 10;
+            Update();
+        });
 
         startSearch();    //START STATE
     }
@@ -340,6 +428,18 @@ public class PathFinding {
                     path.construct();
                     solving = false;
                     break;
+                case 4:
+                    staticPathFactory = new StaticPathFactory<>(null, null, null, AlgoType.ACO, null);
+                    path = staticPathFactory.createStaticPath2D();
+                    path.construct();
+                    solving = false;
+                    break;
+                case 5:
+                    staticPathFactory = new StaticPathFactory<>(null, null, null, AlgoType.GA, null);
+                    path = staticPathFactory.createStaticPath2D();
+                    path.construct();
+                    solving = false;
+                    break;
             }
         }
         pause();    //PAUSE STATE
@@ -368,6 +468,11 @@ public class PathFinding {
         lengthL.setText("Path Length: " + length);
         densityL.setText(obstacles.getValue() + "%");
         checkL.setText("Checks: " + checks);
+
+        //ACO
+        param1ValueL.setText(String.valueOf(param1));
+        param2ValueL.setText(String.valueOf(param2));
+        param3ValueL.setText(String.valueOf(param3));
     }
 
     public void reset() {    //RESET METHOD
@@ -414,16 +519,33 @@ public class PathFinding {
                             g.setColor(Color.YELLOW);
                             break;
                     }
-                    g.fillRect(x * CSIZE, y * CSIZE, CSIZE, CSIZE);
-                    g.setColor(Color.BLACK);
-                    g.drawRect(x * CSIZE, y * CSIZE, CSIZE, CSIZE);
-                    //DEBUG STUFF
-					/*
-					if(curAlg == 1)
-						g.drawString(map[x][y].getHops()+"/"+map[x][y].getEuclidDist(), (x*CSIZE)+(CSIZE/2)-10, (y*CSIZE)+(CSIZE/2));
-					else 
-						g.drawString(""+map[x][y].getHops(), (x*CSIZE)+(CSIZE/2), (y*CSIZE)+(CSIZE/2));
-					*/
+                    if ((curAlg != 3)
+                            || (map[x][y].getType() != 3 && map[x][y].getType() != 4 && map[x][y].getType() != 5)) {
+                        g.fillRect(x * CSIZE, y * CSIZE, CSIZE, CSIZE);
+                    }
+
+                    //绘制采样点及连线
+                    if (curAlg != 3) {
+                        g.setColor(Color.BLACK);
+                        g.drawRect(x * CSIZE, y * CSIZE, CSIZE, CSIZE);
+                    }
+
+                    /**RRT* paint*/
+                    for (int i = 0; i < nodeList.size(); i++) {
+                        //Node
+                        g.setColor(Color.BLACK);
+                        g.drawOval((int) ((nodeList.get(i).getX() - 0.1) * CSIZE), (int) ((nodeList.get(i).getY() - 0.1) * CSIZE), (int) (0.2 * CSIZE), (int) (0.2 * CSIZE));
+                        //Line
+                        g.setColor(Color.GREEN);
+                        if (nodeList.get(i).getParent() != null)
+                            g.drawLine((int) ((nodeList.get(i).getParent().getX()) * CSIZE), (int) ((nodeList.get(i).getParent().getY()) * CSIZE), (int) ((nodeList.get(i).getX()) * CSIZE), (int) ((nodeList.get(i).getY()) * CSIZE));
+                    }
+
+                    for (int i = 0; i < linePath.size(); i++) {
+                        g.setColor(Color.RED);
+                        if (linePath.get(i).getParent() != null)
+                            g.drawLine((int) ((linePath.get(i).getParent().getX()) * CSIZE), (int) ((linePath.get(i).getParent().getY()) * CSIZE), (int) ((linePath.get(i).getX()) * CSIZE), (int) ((linePath.get(i).getY()) * CSIZE));
+                    }
                 }
             }
         }
@@ -500,123 +622,6 @@ public class PathFinding {
 
         @Override
         public void mouseReleased(MouseEvent e) {
-        }
-    }
-
-    class Algorithm {    //ALGORITHM CLASS
-
-        //DIJKSTRA WORKS BY PROPAGATING OUTWARDS UNTIL IT FINDS THE FINISH AND THEN WORKING ITS WAY BACK TO GET THE PATH
-        //IT USES A PRIORITY QUE TO KEEP TRACK OF NODES THAT IT NEEDS TO EXPLORE
-        //EACH NODE IN THE PRIORITY QUE IS EXPLORED AND ALL OF ITS NEIGHBORS ARE ADDED TO THE QUE
-        //ONCE A NODE IS EXLPORED IT IS DELETED FROM THE QUE
-        //AN ARRAYLIST IS USED TO REPRESENT THE PRIORITY QUE
-        //A SEPERATE ARRAYLIST IS RETURNED FROM A METHOD THAT EXPLORES A NODES NEIGHBORS
-        //THIS ARRAYLIST CONTAINS ALL THE NODES THAT WERE EXPLORED, IT IS THEN ADDED TO THE QUE
-        //A HOPS VARIABLE IN EACH NODE REPRESENTS THE NUMBER OF NODES TRAVELED FROM THE START
-        public void Dijkstra() {
-            List<Node> priority = new ArrayList<>();    //CREATE A PRIORITY QUE
-            priority.add(map[startx][starty]);    //ADD THE START TO THE QUE
-            while (solving) {
-                if (priority.size() <= 0) {    //IF THE QUE IS 0 THEN NO PATH CAN BE FOUND
-                    solving = false;
-                    break;
-                }
-                double hops = priority.get(0).getHops() + 1;    //INCREMENT THE HOPS VARIABLE
-                ArrayList<Node> explored = exploreNeighbors(priority.get(0), hops);    //CREATE AN ARRAYLIST OF NODES THAT WERE EXPLORED
-                if (explored.size() > 0) {
-                    priority.remove(0);    //REMOVE THE NODE FROM THE QUE
-                    priority.addAll(explored);    //ADD ALL THE NEW NODES TO THE QUE
-                    Update();
-                    delay();
-                } else {    //IF NO NODES WERE EXPLORED THEN JUST REMOVE THE NODE FROM THE QUE
-                    priority.remove(0);
-                }
-            }
-        }
-
-        //A STAR WORKS ESSENTIALLY THE SAME AS DIJKSTRA CREATING A PRIORITY QUE AND PROPAGATING OUTWARDS UNTIL IT FINDS THE END
-        //HOWEVER ASTAR BUILDS IN A HEURISTIC OF DISTANCE FROM ANY NODE TO THE FINISH
-        //THIS MEANS THAT NODES THAT ARE CLOSER TO THE FINISH WILL BE EXPLORED FIRST
-        //THIS HEURISTIC IS BUILT IN BY SORTING THE QUE ACCORDING TO HOPS PLUS DISTANCE UNTIL THE FINISH
-        public void AStar() {
-            ArrayList<Node> priority = new ArrayList<>();
-            priority.add(map[startx][starty]);
-            while (solving) {
-                if (priority.size() <= 0) {
-                    solving = false;
-                    break;
-                }
-                double hops = priority.get(0).getHops() + 1;
-                ArrayList<Node> explored = exploreNeighbors(priority.get(0), hops);
-                if (explored.size() > 0) {
-                    priority.remove(0);
-                    priority.addAll(explored);
-                    Update();
-                    delay();
-                } else {
-                    priority.remove(0);
-                }
-                sortQue(priority);    //SORT THE PRIORITY QUE
-            }
-        }
-
-        public ArrayList<Node> sortQue(ArrayList<Node> sort) {    //SORT PRIORITY QUE
-            int c = 0;
-            while (c < sort.size()) {
-                int sm = c;
-                for (int i = c + 1; i < sort.size(); i++) {
-                    if (sort.get(i).getEuclidDist(finishx, finishy) + sort.get(i).getHops() < sort.get(sm).getEuclidDist(finishx, finishy) + sort.get(sm).getHops())
-                        sm = i;
-                }
-                if (c != sm) {
-                    Node temp = sort.get(c);
-                    sort.set(c, sort.get(sm));
-                    sort.set(sm, temp);
-                }
-                c++;
-            }
-            return sort;
-        }
-
-        public ArrayList<Node> exploreNeighbors(Node current, double hops) {    //EXPLORE NEIGHBORS
-            ArrayList<Node> explored = new ArrayList<Node>();    //LIST OF NODES THAT HAVE BEEN EXPLORED
-            for (int a = -1; a <= 1; a++) {
-                for (int b = -1; b <= 1; b++) {
-                    int xbound = current.getX() + a;
-                    int ybound = current.getY() + b;
-                    if ((xbound > -1 && xbound < cells) && (ybound > -1 && ybound < cells)) {    //MAKES SURE THE NODE IS NOT OUTSIDE THE GRID
-                        Node neighbor = map[xbound][ybound];
-                        if ((neighbor.getHops() == -1 || neighbor.getHops() > hops) && neighbor.getType() != 2) {    //CHECKS IF THE NODE IS NOT A WALL AND THAT IT HAS NOT BEEN EXPLORED
-                            explore(neighbor, current.getX(), current.getY(), hops);    //EXPLORE THE NODE
-                            explored.add(neighbor);    //ADD THE NODE TO THE LIST
-                        }
-                    }
-                }
-            }
-            return explored;
-        }
-
-        public void explore(Node current, int lastx, int lasty, double hops) {    //EXPLORE A NODE
-            if (current.getType() != 0 && current.getType() != 1)    //CHECK THAT THE NODE IS NOT THE START OR FINISH
-                current.setType(4);    //SET IT TO EXPLORED
-            current.setLastNode(lastx, lasty);    //KEEP TRACK OF THE NODE THAT THIS NODE IS EXPLORED FROM
-            current.setHops(hops);    //SET THE HOPS FROM THE START
-            checks++;
-            if (current.getType() == 1) {    //IF THE NODE IS THE FINISH THEN BACKTRACK TO GET THE PATH
-                backtrack(current.getLastX(), current.getLastY(), hops);
-            }
-        }
-
-        public void backtrack(int lx, int ly, double hops) {    //BACKTRACK
-            length = hops;
-            while (hops > 1) {    //BACKTRACK FROM THE END OF THE PATH TO THE START
-                Node current = map[lx][ly];
-                current.setType(5);
-                lx = current.getLastX();
-                ly = current.getLastY();
-                hops--;
-            }
-            solving = false;
         }
     }
 }

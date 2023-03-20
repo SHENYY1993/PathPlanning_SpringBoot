@@ -14,11 +14,6 @@ class CylinderObstacle extends Obstacle
 class SphereObstacle extends Obstacle
 class StaticPathFactory<T, O> extends PathFactory
 class DynamicPathFactory<T, O> extends PathFactory
-class DijkstraAlgo extends PathAlgo
-class AStarAlgo<T, O> extends PathAlgo
-class RRTAlgo<T, O> extends PathAlgo
-class RRTStarAlgo<T, O> extends PathAlgo
-class InformedRRTStarAlgo<T, O> extends PathAlgo
 
 class PathPlanningBizImpl implements PathPlanningBiz
 
@@ -102,5 +97,59 @@ interface PathPlanningBiz {
     JSONObject getPath2D(JSONObject scenario);
 
     JSONObject getPath3D(JSONObject scenario);
+}
+
+class DijkstraAlgo extends PathAlgo {
+    private boolean solving = false;
+    private int cells;
+    private Node[][] map;
+    private int checks = 0;
+    private double length = 0;
+    private int startx = -1;
+    private int starty = -1;
+    private int finishx = -1;
+    private int finishy = -1;
+
+    public ArrayList<Node> exploreNeighbors(Node current)
+    public void explore(Node current, int lastx, int lasty, double hops)
+    public void backtrack(int lx, int ly, double hops)
+}
+
+class AStarAlgo<T, O> extends PathAlgo {
+    private boolean solving = false;
+    private int cells;
+    private Node[][] map;
+    private int checks = 0;
+    private double length = 0;
+    private int startx = -1;
+    private int starty = -1;
+    private int finishx = -1;
+    private int finishy = -1;
+
+    public ArrayList<Node> exploreNeighbors(Node current)
+    public void explore(Node current, int lastx, int lasty, double hops)
+    public void backtrack(int lx, int ly, double hops)
+    public ArrayList<Node> sortQue(ArrayList<Node> sort)
+}
+
+class RRTAlgo<T, O> extends PathAlgo{
+    private boolean solving = false;
+    private int cells;
+    private Node[][] map;
+    private int checks = 0;
+    private double length = 0;
+    private int startx = -1;
+    private int starty = -1;
+    private int finishx = -1;
+    private int finishy = -1;
+    private int gen = 200;
+    private double stepSize = 1;
+
+    public void backtrack(int lx, int ly, double hops)
+}
+
+class RRTStarAlgo<T, O> extends PathAlgo{
+}
+class InformedRRTStarAlgo<T, O> extends PathAlgo{
 }
 @enduml
