@@ -1,7 +1,6 @@
 package com.shenyy.pretendto.pathfactory.algo;
 
 import com.shenyy.pretendto.pathfactory.Path;
-import com.shenyy.pretendto.pathfactory.Path2D;
 import com.shenyy.pretendto.pathfactory.dijkstra2.PathFinding;
 
 import java.util.ArrayList;
@@ -10,10 +9,6 @@ import java.util.List;
 import java.util.Random;
 
 public class GeneticAlgo extends PathAlgo {
-    public static void main(String[] args) {
-
-    }
-
     private int cityNum; // 城市数量
     private double[][] distanceMatrix; // 城市距离矩阵
     private List<Node> cityPosition = new ArrayList<>();
@@ -44,8 +39,8 @@ public class GeneticAlgo extends PathAlgo {
         maxGenerations = 1000;
         populationSize = 100;
 
-        crossoverRate = PathFinding.getInstance().beta;
-        mutationRate = PathFinding.getInstance().rho;
+        crossoverRate = PathFinding.getInstance().param2;
+        mutationRate = PathFinding.getInstance().param3;
     }
 
     @Override

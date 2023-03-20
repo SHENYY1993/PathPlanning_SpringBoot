@@ -31,15 +31,15 @@ public class PathFinding {
     public int checks = 0;
     public double length = 0;
     public int curAlg = 0;
-    private int WIDTH = 1100;
+    private int WIDTH = 1200;
     private final int HEIGHT = 650;
     private final int MSIZE = 600;
     private int CSIZE = MSIZE / cells;
 
-    //VARIABLES——ACO
-    public double alpha = 1;
-    public double beta = 2;
-    public double rho = 0.2;
+    //VARIABLES (ACO, GA)
+    public double param1 = 1;
+    public double param2 = 2;
+    public double param3 = 0.2;
 
     //UTIL ARRAYS
     private String[] algorithms = {"Dijkstra", "A*", "RRT", "RRT*", "ACO", "GA"};
@@ -61,9 +61,9 @@ public class PathFinding {
     JSlider speed = new JSlider(0, 500, delay);
     JSlider obstacles = new JSlider(1, 100, 50);
     //SLIDERS——ACO
-    JSlider alphaSL = new JSlider(0, 100, 3);
-    JSlider betaSL = new JSlider(0, 100, 20);
-    JSlider rhoSL = new JSlider(2, 5, 2);
+    JSlider param1SL = new JSlider(0, 100, 3);
+    JSlider param2SL = new JSlider(0, 100, 20);
+    JSlider param3SL = new JSlider(2, 5, 2);
     //LABELS
     JLabel algL = new JLabel("Algorithms");
     JLabel toolL = new JLabel("Toolbox");
@@ -75,13 +75,15 @@ public class PathFinding {
     JLabel densityL = new JLabel(obstacles.getValue() + "%");
     JLabel checkL = new JLabel("Checks: " + checks);
     JLabel lengthL = new JLabel("Path Length: " + length);
-    //LABELS——ACO
+    //LABELS(ACO, GA)
+    private int widthL = 80;
+    private int heightL = 25;
     JLabel param1L = new JLabel("alpha");
     JLabel param2L = new JLabel("beta");
     JLabel param3L = new JLabel("rho");
-    JLabel alphaValueL = new JLabel(String.valueOf(alpha));
-    JLabel betaValueL = new JLabel(String.valueOf(beta));
-    JLabel rhoValueL = new JLabel(String.valueOf(rho));
+    JLabel param1ValueL = new JLabel(String.valueOf(param1));
+    JLabel param2ValueL = new JLabel(String.valueOf(param2));
+    JLabel param3ValueL = new JLabel(String.valueOf(param3));
     //BUTTONS
     JButton searchB = new JButton("Start Search");
     JButton resetB = new JButton("Reset");
@@ -100,12 +102,6 @@ public class PathFinding {
     Border loweredetched = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 
     private static PathFinding instance;
-
-//    public static void main(String[] args) {    //MAIN METHOD
-//        getInstance();
-//        instance.clearMap();
-//        instance.initialize();
-//    }
 
     public PathFinding() {    //CONSTRUCTOR
     }
@@ -256,34 +252,33 @@ public class PathFinding {
 
         /**ACO panel*/
         algoInfoP.setLayout(null);
-        algoInfoP.setBounds(850, 10, 200, 600);
+        algoInfoP.setBounds(850, 10, 300, 600);
         algoInfoP.setBorder(BorderFactory.createTitledBorder(loweredetched, "Info"));
-        alphaSL.setMajorTickSpacing(10);
 
         space = 25;
-        param1L.setBounds(15, space, 40, 25);
+        param1L.setBounds(15, space, widthL, heightL);
         algoInfoP.add(param1L);
-        alphaSL.setMajorTickSpacing(10);
-        alphaSL.setBounds(50, space, 100, 25);
-        algoInfoP.add(alphaSL);
-        alphaValueL.setBounds(160, space, 40, 25);
-        algoInfoP.add(alphaValueL);
+        param1SL.setMajorTickSpacing(10);
+        param1SL.setBounds(90, space, 100, heightL);
+        algoInfoP.add(param1SL);
+        param1ValueL.setBounds(200, space, widthL, heightL);
+        algoInfoP.add(param1ValueL);
         space += buff;
-        param2L.setBounds(15, space, 40, 25);
+        param2L.setBounds(15, space, widthL, heightL);
         algoInfoP.add(param2L);
-        betaSL.setMajorTickSpacing(10);
-        betaSL.setBounds(50, space, 100, 25);
-        algoInfoP.add(betaSL);
-        betaValueL.setBounds(160, space, 40, 25);
-        algoInfoP.add(betaValueL);
+        param2SL.setMajorTickSpacing(10);
+        param2SL.setBounds(90, space, 100, heightL);
+        algoInfoP.add(param2SL);
+        param2ValueL.setBounds(200, space, widthL, heightL);
+        algoInfoP.add(param2ValueL);
         space += buff;
-        param3L.setBounds(15, space, 40, 25);
+        param3L.setBounds(15, space, widthL, heightL);
         algoInfoP.add(param3L);
-        rhoSL.setMajorTickSpacing(10);
-        rhoSL.setBounds(50, space, 100, 25);
-        algoInfoP.add(rhoSL);
-        rhoValueL.setBounds(160, space, 40, 25);
-        algoInfoP.add(rhoValueL);
+        param3SL.setMajorTickSpacing(10);
+        param3SL.setBounds(90, space, 100, heightL);
+        algoInfoP.add(param3SL);
+        param3ValueL.setBounds(200, space, widthL, heightL);
+        algoInfoP.add(param3ValueL);
 
 
         frame.getContentPane().add(toolP);
@@ -327,6 +322,25 @@ public class PathFinding {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 curAlg = algorithmsBx.getSelectedIndex();
+                if (curAlg == 4) {
+                    startx = 0;
+                    starty = 0;
+                    finishx = 0;
+                    finishy = 0;
+
+                    param1L.setText("alpha");
+                    param2L.setText("beta");
+                    param3L.setText("rho");
+                } else if (curAlg == 5) {
+                    startx = 0;
+                    starty = 0;
+                    finishx = 0;
+                    finishy = 0;
+
+                    param1L.setText("crossover");
+                    param2L.setText("mutation");
+                    param3L.setText("param3");
+                }
                 Update();
             }
         });
@@ -369,16 +383,16 @@ public class PathFinding {
             }
         });
         //ACO
-        alphaSL.addChangeListener((e) -> {
-            alpha = alphaSL.getValue() / 10;
+        param1SL.addChangeListener((e) -> {
+            param1 = param1SL.getValue() / 10;
             Update();
         });
-        betaSL.addChangeListener((e) -> {
-            beta = betaSL.getValue() / 10;
+        param2SL.addChangeListener((e) -> {
+            param2 = param2SL.getValue() / 10;
             Update();
         });
-        rhoSL.addChangeListener((e) -> {
-            rho = (double) rhoSL.getValue() / 10;
+        param3SL.addChangeListener((e) -> {
+            param3 = (double) param3SL.getValue() / 10;
             Update();
         });
 
@@ -456,9 +470,9 @@ public class PathFinding {
         checkL.setText("Checks: " + checks);
 
         //ACO
-        alphaValueL.setText(String.valueOf(alpha));
-        betaValueL.setText(String.valueOf(beta));
-        rhoValueL.setText(String.valueOf(rho));
+        param1ValueL.setText(String.valueOf(param1));
+        param2ValueL.setText(String.valueOf(param2));
+        param3ValueL.setText(String.valueOf(param3));
     }
 
     public void reset() {    //RESET METHOD
@@ -505,15 +519,13 @@ public class PathFinding {
                             g.setColor(Color.YELLOW);
                             break;
                     }
-                    if ((curAlg != 3 && curAlg != 4)
+                    if ((curAlg != 3)
                             || (map[x][y].getType() != 3 && map[x][y].getType() != 4 && map[x][y].getType() != 5)) {
                         g.fillRect(x * CSIZE, y * CSIZE, CSIZE, CSIZE);
                     }
 
                     //绘制采样点及连线
-                    if (curAlg == 3 || curAlg == 4) {
-
-                    } else {
+                    if (curAlg != 3) {
                         g.setColor(Color.BLACK);
                         g.drawRect(x * CSIZE, y * CSIZE, CSIZE, CSIZE);
                     }

@@ -6,9 +6,7 @@ import com.shenyy.pretendto.pathfactory.algo.PathAlgo;
 import com.shenyy.pretendto.pathfactory.dijkstra2.PathFinding;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @description: Ant Colony Optimization
@@ -68,9 +66,9 @@ public class ACOAlgo extends PathAlgo {
 //        alpha = a;
 //        beta = b;
 //        rho = r;
-        alpha = PathFinding.getInstance().alpha;
-        beta = PathFinding.getInstance().beta;
-        rho = PathFinding.getInstance().rho;
+        alpha = PathFinding.getInstance().param1;
+        beta = PathFinding.getInstance().param2;
+        rho = PathFinding.getInstance().param3;
     }
 
     @Override
