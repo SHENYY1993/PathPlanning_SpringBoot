@@ -73,6 +73,11 @@ public class ACOAlgo extends PathAlgo {
 
     @Override
     public void initialize() {
+        MAX_GEN = PathFinding.getInstance().MAX_GEN;
+        alpha = PathFinding.getInstance().param1;
+        beta = PathFinding.getInstance().param2;
+        rho = PathFinding.getInstance().param3;
+
         //初始化需要途径的点
         double[] x;
         double[] y;
@@ -173,9 +178,6 @@ public class ACOAlgo extends PathAlgo {
                     for (int k = 0; k < cityNum + 1; k++) {
                         bestTour[k] = ants[i].getTabu().get(k).intValue();
                     }
-
-                    /**GUI Update*/
-                    updateGui();
                 }
             }
             // 更新信息素
@@ -184,6 +186,9 @@ public class ACOAlgo extends PathAlgo {
             for (int i = 0; i < antNum; i++) {
                 ants[i].init(distance, alpha, beta);
             }
+
+            /**GUI Update*/
+            updateGui();
         }
     }
 
@@ -197,15 +202,12 @@ public class ACOAlgo extends PathAlgo {
         // 信息素更新
 //        for (int i = 0; i < antNum; i++) { //BUG: 信息素更新应该是cityNum * cityNum的矩阵
         for (int i = 0; i < cityNum; i++) {
-            //新增测试
             // 更新这只蚂蚁的信息数变化矩阵，对称矩阵
             for (int j = 0; j < cityNum; j++) {
-                ants[i].getDelta()[ants[i].getTabu().get(j).intValue()][ants[i]
-                        .getTabu().get(j + 1).intValue()] = (1. / ants[i]
-                        .getTourLength());
-                ants[i].getDelta()[ants[i].getTabu().get(j + 1).intValue()][ants[i]
-                        .getTabu().get(j).intValue()] = (1. / ants[i]
-                        .getTourLength());
+                ants[i].getDelta()[ants[i].getTabu().get(j).intValue()][ants[i].getTabu().get(j + 1).intValue()]
+                        = (1. / ants[i].getTourLength());
+                ants[i].getDelta()[ants[i].getTabu().get(j + 1).intValue()][ants[i].getTabu().get(j).intValue()]
+                        = (1. / ants[i].getTourLength());
             }
             for (int j = 0; j < cityNum; j++) {
                 for (int k = 0; k < antNum; k++) {
