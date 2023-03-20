@@ -62,7 +62,7 @@ public class ACOAlgo extends PathAlgo {
 
         antNum = (int) (cityNum * 1.5);
         ants = new Ant[antNum];
-        MAX_GEN = g;
+        MAX_GEN = PathFinding.getInstance().MAX_GEN;
 //        alpha = a;
 //        beta = b;
 //        rho = r;
@@ -165,7 +165,6 @@ public class ACOAlgo extends PathAlgo {
                 }
                 // 把这只蚂蚁起始采样点加入其禁忌表中
                 // 禁忌表最终形式：起始采样点,采样点1,采样点2...采样点n,起始采样点
-                //ants[i].getTabu().add(ants[i].getFirstCity());
                 ants[i].getTabu().add(ants[i].getTabu().get(0));
                 // 查看这只蚂蚁行走路径距离是否比当前距离优秀
                 if (ants[i].getTourLength() < bestLength) {

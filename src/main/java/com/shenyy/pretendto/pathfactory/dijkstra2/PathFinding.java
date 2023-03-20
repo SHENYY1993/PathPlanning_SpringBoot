@@ -37,6 +37,7 @@ public class PathFinding {
     private int CSIZE = MSIZE / cells;
 
     //VARIABLES (ACO, GA)
+    public int MAX_GEN = 1000;
     public double param1 = 1;
     public double param2 = 2;
     public double param3 = 0.2;
@@ -61,8 +62,9 @@ public class PathFinding {
     JSlider speed = new JSlider(0, 500, delay);
     JSlider obstacles = new JSlider(1, 100, 50);
     //SLIDERS——ACO
-    JSlider param1SL = new JSlider(0, 100, 3);
-    JSlider param2SL = new JSlider(0, 100, 20);
+    JSlider param0SL = new JSlider(0, 1000, 1000);
+    JSlider param1SL = new JSlider(0, 10, 4);
+    JSlider param2SL = new JSlider(0, 10, 2);
     JSlider param3SL = new JSlider(2, 5, 2);
     //LABELS
     JLabel algL = new JLabel("Algorithms");
@@ -78,9 +80,11 @@ public class PathFinding {
     //LABELS(ACO, GA)
     private int widthL = 80;
     private int heightL = 25;
+    JLabel param0L = new JLabel("MAX_GEN");
     JLabel param1L = new JLabel("alpha");
     JLabel param2L = new JLabel("beta");
     JLabel param3L = new JLabel("rho");
+    JLabel param0ValueL = new JLabel(String.valueOf(MAX_GEN));
     JLabel param1ValueL = new JLabel(String.valueOf(param1));
     JLabel param2ValueL = new JLabel(String.valueOf(param2));
     JLabel param3ValueL = new JLabel(String.valueOf(param3));
@@ -256,6 +260,14 @@ public class PathFinding {
         algoInfoP.setBorder(BorderFactory.createTitledBorder(loweredetched, "Info"));
 
         space = 25;
+        param0L.setBounds(15, space, widthL, heightL);
+        algoInfoP.add(param0L);
+        param0SL.setMajorTickSpacing(10);
+        param0SL.setBounds(90, space, 100, heightL);
+        algoInfoP.add(param0SL);
+        param0ValueL.setBounds(200, space, widthL, heightL);
+        algoInfoP.add(param0ValueL);
+        space += buff;
         param1L.setBounds(15, space, widthL, heightL);
         algoInfoP.add(param1L);
         param1SL.setMajorTickSpacing(10);
@@ -328,18 +340,46 @@ public class PathFinding {
                     finishx = 0;
                     finishy = 0;
 
+                    param0L.setText("MAX_GEN");
                     param1L.setText("alpha");
                     param2L.setText("beta");
                     param3L.setText("rho");
+
+                    param0SL.setMinimum(0);
+                    param0SL.setMaximum(1000);
+                    param0SL.setValue(1000);
+                    param1SL.setMinimum(0);
+                    param1SL.setMaximum(10);
+                    param1SL.setValue(4);
+                    param2SL.setMinimum(0);
+                    param2SL.setMaximum(10);
+                    param2SL.setValue(2);
+                    param3SL.setMinimum(0);
+                    param3SL.setMaximum(10);
+                    param3SL.setValue(2);
                 } else if (curAlg == 5) {
                     startx = 0;
                     starty = 0;
                     finishx = 0;
                     finishy = 0;
 
+                    param0L.setText("MAX_GEN");
                     param1L.setText("crossover");
                     param2L.setText("mutation");
-                    param3L.setText("param3");
+                    param3L.setText("population");
+
+                    param0SL.setMinimum(0);
+                    param0SL.setMaximum(1000);
+                    param0SL.setValue(1000);
+                    param1SL.setMinimum(0);
+                    param1SL.setMaximum(100);
+                    param1SL.setValue(40);
+                    param2SL.setMinimum(1);
+                    param2SL.setMaximum(1000);
+                    param2SL.setValue(10);
+                    param3SL.setMinimum(0);
+                    param3SL.setMaximum(200);
+                    param3SL.setValue(100);
                 }
                 Update();
             }
@@ -382,17 +422,33 @@ public class PathFinding {
                         + "          Build Date:  March 28, 2018   ", "Credit", JOptionPane.PLAIN_MESSAGE, new ImageIcon(""));
             }
         });
-        //ACO
+        //Parameters
+        param0SL.addChangeListener((e) -> {
+            MAX_GEN = param0SL.getValue();
+            Update();
+        });
         param1SL.addChangeListener((e) -> {
-            param1 = param1SL.getValue() / 10;
+            if (curAlg == 4) {
+                param1 = param1SL.getValue();
+            } else if (curAlg == 5) {
+                param1 = (double) param1SL.getValue() / 100;
+            }
             Update();
         });
         param2SL.addChangeListener((e) -> {
-            param2 = param2SL.getValue() / 10;
+            if (curAlg == 4) {
+                param2 = param2SL.getValue();
+            } else if (curAlg == 5) {
+                param2 = (double) param2SL.getValue() / 1000;
+            }
             Update();
         });
         param3SL.addChangeListener((e) -> {
-            param3 = (double) param3SL.getValue() / 10;
+            if (curAlg == 4) {
+                param3 = (double) param3SL.getValue() / 10;
+            } else if (curAlg == 5) {
+                param3 = param3SL.getValue();
+            }
             Update();
         });
 
@@ -470,6 +526,7 @@ public class PathFinding {
         checkL.setText("Checks: " + checks);
 
         //ACO
+        param0ValueL.setText(String.valueOf(MAX_GEN));
         param1ValueL.setText(String.valueOf(param1));
         param2ValueL.setText(String.valueOf(param2));
         param3ValueL.setText(String.valueOf(param3));
