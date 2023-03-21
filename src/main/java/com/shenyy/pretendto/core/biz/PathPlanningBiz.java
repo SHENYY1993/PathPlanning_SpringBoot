@@ -8,4 +8,6 @@ public interface PathPlanningBiz {
     JSONObject getPath2D(JSONObject scenario);
 
     JSONObject getPath3D(JSONObject scenario);
+
+    JSONObject getSimulationPath();
 }

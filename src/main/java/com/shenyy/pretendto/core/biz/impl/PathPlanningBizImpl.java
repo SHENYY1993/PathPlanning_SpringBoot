@@ -7,16 +7,16 @@ import com.alibaba.fastjson.TypeReference;
 import com.shenyy.pretendto.core.biz.PathPlanningBiz;
 import com.shenyy.pretendto.pathfactory.*;
 import com.shenyy.pretendto.pathfactory.enumtype.AlgoType;
+import com.shenyy.pretendto.pathfactory.gui.PathFinding;
+import com.shenyy.pretendto.pathfactory.node.Node;
 import com.shenyy.pretendto.utils.CommonUtils;
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class PathPlanningBizImpl implements PathPlanningBiz {
@@ -47,6 +47,22 @@ public class PathPlanningBizImpl implements PathPlanningBiz {
 
         PathPlanningBizImpl pathPlanningBizImpl = new PathPlanningBizImpl();
         System.out.println(pathPlanningBizImpl.getPath(jsonObject));
+    }
+
+    @Override
+    public JSONObject getSimulationPath() {
+        JSONObject res = new JSONObject();
+        Node node = PathFinding.getInstance().linePath.get(0);
+        List<double[]> path = new ArrayList<>();
+        while (true) {
+            if (node.getParent() == null) {
+                break;
+            }
+            path.add(new double[]{node.getX(), node.getY()});
+            node = node.getParent();
+        }
+        res.put("path", path);
+        return res;
     }
 
     @Override
@@ -99,7 +115,7 @@ public class PathPlanningBizImpl implements PathPlanningBiz {
             });
         }
 
-        PathFactory<Point2D, CircleObstacle> staticPathFactory = new StaticPathFactory<>(source, target, obstacles, AlgoType.DIJKSTRA, params);
+        PathFactory<Point2D, CircleObstacle> staticPathFactory = new StaticPathFactory<>(source, target, obstacles, AlgoType.ACO, params);
 
         Path<Point2D, CircleObstacle> path = staticPathFactory.createStaticPath2D();
         path.construct();
