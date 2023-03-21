@@ -56,6 +56,9 @@ public class PathFinding {
     public List<Node> nodeList = new ArrayList<>();
     //draw final path with line
     public List<Node> linePath = new ArrayList<>();
+    public double[] bestLengthArr;
+    public double[] bestLengthGen;
+
 
     PathFactory<Point, Obstacle<Point>> staticPathFactory;
     Random r = new Random();
