@@ -60,7 +60,7 @@ public class Ant implements Cloneable {
         }
         // 随机挑选一个采样点作为起始采样点
         Random random = new Random(System.currentTimeMillis());
-        //firstCity = random.nextInt(cityNum);//因为随机数生成不随机，导致蚁群初始城市分布不均匀，影响算法效果
+//        firstCity = random.nextInt(cityNum);//因为随机数生成不随机，导致蚁群初始城市分布不均匀，影响算法效果
         firstCity = (int) (1000 * Math.random()) % cityNum;
 
         // 允许搜索的采样点集合中移除起始采样点
@@ -95,8 +95,8 @@ public class Ant implements Cloneable {
             boolean flag = false;
             for (Integer j : allowedCities) {
                 if (i == j.intValue()) {
-                    p[i] = (Math.pow(pheromone[currentCity][i], alpha) * Math
-                            .pow(1.0 / distance[currentCity][i], beta)) / sum;
+                    p[i] = (Math.pow(pheromone[currentCity][i], alpha) * Math.pow(1.0 / distance[currentCity][i], beta))
+                            / sum;
                     flag = true;
                     break;
                 }

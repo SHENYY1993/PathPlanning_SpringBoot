@@ -1,4 +1,4 @@
-package com.shenyy.pretendto.pathfactory.algo;
+package com.shenyy.pretendto.pathfactory.node;
 
 import java.util.ArrayList;
 

@@ -1,6 +1,6 @@
-package com.shenyy.pretendto.pathfactory.dijkstra2;
+package com.shenyy.pretendto.pathfactory.node;
 
-public class Node {
+public class NodeGrid {
     // 0 = start, 1 = finish, 2 = wall, 3 = empty, 4 = checked, 5 = finalpath
     private int cellType = 0;
     private double hops;
@@ -10,7 +10,7 @@ public class Node {
     private int lastY;
     private double dToEnd = 0;
 
-    public Node(int type, int x, int y) {    //CONSTRUCTOR
+    public NodeGrid(int type, int x, int y) {    //CONSTRUCTOR
         cellType = type;
         this.x = x;
         this.y = y;

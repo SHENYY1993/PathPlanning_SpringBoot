@@ -1,9 +1,10 @@
 package com.shenyy.pretendto.pathfactory.algo.ant;
 
 import com.shenyy.pretendto.pathfactory.Path;
-import com.shenyy.pretendto.pathfactory.algo.Node;
+import com.shenyy.pretendto.pathfactory.node.Node;
 import com.shenyy.pretendto.pathfactory.algo.PathAlgo;
-import com.shenyy.pretendto.pathfactory.dijkstra2.PathFinding;
+import com.shenyy.pretendto.pathfactory.node.NodeGrid;
+import com.shenyy.pretendto.pathfactory.gui.PathFinding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +52,7 @@ public class ACOAlgo extends PathAlgo {
 
         //获取城市数量
         cityNum = 0;
-        com.shenyy.pretendto.pathfactory.dijkstra2.Node[][] map = PathFinding.getInstance().map;
+        NodeGrid[][] map = PathFinding.getInstance().map;
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[0].length; j++) {
                 if (map[i][j].getType() == 2) {
@@ -73,12 +74,18 @@ public class ACOAlgo extends PathAlgo {
 
     @Override
     public void initialize() {
+        System.out.println("ACO algorithm initializing...");
+        MAX_GEN = PathFinding.getInstance().MAX_GEN;
+        alpha = PathFinding.getInstance().param1;
+        beta = PathFinding.getInstance().param2;
+        rho = PathFinding.getInstance().param3;
+
         //初始化需要途径的点
         double[] x;
         double[] y;
 
         //获取城市分布
-        com.shenyy.pretendto.pathfactory.dijkstra2.Node[][] map = PathFinding.getInstance().map;
+        NodeGrid[][] map = PathFinding.getInstance().map;
 
         distance = new double[cityNum][cityNum];
         x = new double[cityNum];
@@ -113,7 +120,7 @@ public class ACOAlgo extends PathAlgo {
 
     @Override
     public void construct() {
-        //单次最优路径计算
+        System.out.println("ACO algorithm constructing 2D path...");
         solve();
 
         /**GUI Update*/
@@ -173,9 +180,6 @@ public class ACOAlgo extends PathAlgo {
                     for (int k = 0; k < cityNum + 1; k++) {
                         bestTour[k] = ants[i].getTabu().get(k).intValue();
                     }
-
-                    /**GUI Update*/
-                    updateGui();
                 }
             }
             // 更新信息素
@@ -184,6 +188,9 @@ public class ACOAlgo extends PathAlgo {
             for (int i = 0; i < antNum; i++) {
                 ants[i].init(distance, alpha, beta);
             }
+
+            /**GUI Update*/
+            updateGui();
         }
     }
 
@@ -197,15 +204,12 @@ public class ACOAlgo extends PathAlgo {
         // 信息素更新
 //        for (int i = 0; i < antNum; i++) { //BUG: 信息素更新应该是cityNum * cityNum的矩阵
         for (int i = 0; i < cityNum; i++) {
-            //新增测试
             // 更新这只蚂蚁的信息数变化矩阵，对称矩阵
             for (int j = 0; j < cityNum; j++) {
-                ants[i].getDelta()[ants[i].getTabu().get(j).intValue()][ants[i]
-                        .getTabu().get(j + 1).intValue()] = (1. / ants[i]
-                        .getTourLength());
-                ants[i].getDelta()[ants[i].getTabu().get(j + 1).intValue()][ants[i]
-                        .getTabu().get(j).intValue()] = (1. / ants[i]
-                        .getTourLength());
+                ants[i].getDelta()[ants[i].getTabu().get(j).intValue()][ants[i].getTabu().get(j + 1).intValue()]
+                        = (1. / ants[i].getTourLength());
+                ants[i].getDelta()[ants[i].getTabu().get(j + 1).intValue()][ants[i].getTabu().get(j).intValue()]
+                        = (1. / ants[i].getTourLength());
             }
             for (int j = 0; j < cityNum; j++) {
                 for (int k = 0; k < antNum; k++) {
