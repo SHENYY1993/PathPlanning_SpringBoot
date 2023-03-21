@@ -25,6 +25,10 @@ public class GeneticAlgo extends PathAlgo {
 
     private static final double LEN = 0.5; //补偿半格长度
 
+    //搜索过程数据记录
+    public double[] bestLengthGen; // 当代最短路径数组
+    public double[] bestLengthArr; // 最短路径数组
+
     public GeneticAlgo(Path path) {
         super(path);
         //获取城市数量
@@ -47,6 +51,13 @@ public class GeneticAlgo extends PathAlgo {
     @Override
     public void initialize() {
         System.out.println("Genetic algorithm initializing...");
+        maxGenerations = PathFinding.getInstance().MAX_GEN;
+        crossoverRate = PathFinding.getInstance().param1;
+        mutationRate = PathFinding.getInstance().param2;
+        populationSize = (int) PathFinding.getInstance().param3;
+
+        bestLengthArr = new double[maxGenerations];
+        bestLengthGen = new double[maxGenerations];
         //初始化需要途径的点
         double[] x;
         double[] y;
@@ -104,6 +115,9 @@ public class GeneticAlgo extends PathAlgo {
             }
             curGen = i;
 
+            double bestLenGen = Double.MAX_VALUE;
+
+            // populationSize大小的种群
             int[][] newPopulation = new int[populationSize][cityNum];
             for (int j = 0; j < populationSize; j++) {
                 int[] parent1 = selection(population);
@@ -120,11 +134,18 @@ public class GeneticAlgo extends PathAlgo {
                 if (fitness < minFitness) {
                     minFitness = fitness;
                     bestIndividual = individual;
+                }
 
-                    /**GUI Update*/
-                    updateGui();
+                //记录当代的最短路径
+                if (fitness < bestLenGen) {
+                    bestLenGen = fitness;
                 }
             }
+
+            /**GUI Update*/
+            bestLengthArr[i] = minFitness;
+            bestLengthGen[i] = bestLenGen;
+            updateGui();
         }
     }
 
@@ -232,18 +253,24 @@ public class GeneticAlgo extends PathAlgo {
      * GUI Update
      */
     private void updateGui() {
-        PathFinding.getInstance().checks = curGen;
-        PathFinding.getInstance().length = minFitness;
-        List<Node> path = new ArrayList<>();
-        for (int index = 0; index < bestIndividual.length; index++) {
-            path.add(new Node(cityPosition.get(bestIndividual[index]).getX(), cityPosition.get(bestIndividual[index]).getY()));
+        try {
+            PathFinding.getInstance().checks = curGen;
+            PathFinding.getInstance().length = minFitness;
+            List<Node> path = new ArrayList<>();
+            for (int index = 0; index < bestIndividual.length; index++) {
+                path.add(new Node(cityPosition.get(bestIndividual[index]).getX(), cityPosition.get(bestIndividual[index]).getY()));
+            }
+            path.add(new Node(cityPosition.get(bestIndividual[0]).getX(), cityPosition.get(bestIndividual[0]).getY()));
+            for (int index = 0; index < path.size() - 1; index++) {
+                path.get(index).setParent(path.get(index + 1));
+            }
+            PathFinding.getInstance().linePath = path;
+            PathFinding.getInstance().bestLengthArr = bestLengthArr;
+            PathFinding.getInstance().bestLengthGen = bestLengthGen;
+            PathFinding.getInstance().Update();
+            PathFinding.getInstance().delay();
+        } catch (Exception e) {
+
         }
-        path.add(new Node(cityPosition.get(bestIndividual[0]).getX(), cityPosition.get(bestIndividual[0]).getY()));
-        for (int index = 0; index < path.size() - 1; index++) {
-            path.get(index).setParent(path.get(index + 1));
-        }
-        PathFinding.getInstance().linePath = path;
-        PathFinding.getInstance().Update();
-        PathFinding.getInstance().delay();
     }
 }

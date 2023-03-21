@@ -31,6 +31,10 @@ public class ACOAlgo extends PathAlgo {
     private double beta;
     private double rho;
 
+    //搜索过程数据记录
+    public double[] bestLengthGen; // 当代最短路径数组
+    public double[] bestLengthArr; // 最短路径数组
+
 
     private static final double LEN = 0.5; //补偿半格长度
 
@@ -79,6 +83,9 @@ public class ACOAlgo extends PathAlgo {
         alpha = PathFinding.getInstance().param1;
         beta = PathFinding.getInstance().param2;
         rho = PathFinding.getInstance().param3;
+
+        bestLengthArr = new double[MAX_GEN];
+        bestLengthGen = new double[MAX_GEN];
 
         //初始化需要途径的点
         double[] x;
@@ -158,6 +165,7 @@ public class ACOAlgo extends PathAlgo {
             }
             curGen = g;
 
+            double bestLenGen = Double.MAX_VALUE;
             // antNum只蚂蚁
             for (int i = 0; i < antNum; i++) {
                 // i这只蚂蚁走cityNum步，完整一个TSP
@@ -181,6 +189,11 @@ public class ACOAlgo extends PathAlgo {
                         bestTour[k] = ants[i].getTabu().get(k).intValue();
                     }
                 }
+
+                //记录当代的最短路径
+                if (ants[i].getTourLength() < bestLenGen) {
+                    bestLenGen = ants[i].getTourLength();
+                }
             }
             // 更新信息素
             updatePheromone();
@@ -190,6 +203,8 @@ public class ACOAlgo extends PathAlgo {
             }
 
             /**GUI Update*/
+            bestLengthArr[g] = bestLength;
+            bestLengthGen[g] = bestLenGen;
             updateGui();
         }
     }
@@ -223,17 +238,23 @@ public class ACOAlgo extends PathAlgo {
      * GUI Update
      */
     private void updateGui() {
-        PathFinding.getInstance().checks = curGen;
-        PathFinding.getInstance().length = bestLength;
-        List<Node> path = new ArrayList<>();
-        for (int index = 0; index < bestTour.length; index++) {
-            path.add(new Node(cityPosition.get(bestTour[index]).getX(), cityPosition.get(bestTour[index]).getY()));
+        try {
+            PathFinding.getInstance().checks = curGen;
+            PathFinding.getInstance().length = bestLength;
+            List<Node> path = new ArrayList<>();
+            for (int index = 0; index < bestTour.length; index++) {
+                path.add(new Node(cityPosition.get(bestTour[index]).getX(), cityPosition.get(bestTour[index]).getY()));
+            }
+            for (int index = 0; index < path.size() - 1; index++) {
+                path.get(index).setParent(path.get(index + 1));
+            }
+            PathFinding.getInstance().linePath = path;
+            PathFinding.getInstance().bestLengthArr = bestLengthArr;
+            PathFinding.getInstance().bestLengthGen = bestLengthGen;
+            PathFinding.getInstance().Update();
+            PathFinding.getInstance().delay();
+        } catch (Exception e) {
+
         }
-        for (int index = 0; index < path.size() - 1; index++) {
-            path.get(index).setParent(path.get(index + 1));
-        }
-        PathFinding.getInstance().linePath = path;
-        PathFinding.getInstance().Update();
-        PathFinding.getInstance().delay();
     }
 }

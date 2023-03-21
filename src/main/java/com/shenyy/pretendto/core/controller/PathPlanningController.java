@@ -5,10 +5,7 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import com.shenyy.pretendto.core.biz.PathPlanningBiz;
 import com.shenyy.pretendto.utils.CommonUtils;
 import javafx.geometry.Point3D;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -22,5 +19,10 @@ public class PathPlanningController {
     @PostMapping(value = "/getPath")
     public JSONObject getPath(@RequestBody JSONObject scenario) {
         return pathPlanningBiz.getPath(scenario);
+    }
+
+    @GetMapping(value = "/getSimulationPath")
+    public JSONObject getSimulationPath() {
+        return pathPlanningBiz.getSimulationPath();
     }
 }

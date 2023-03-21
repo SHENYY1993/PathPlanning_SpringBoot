@@ -192,10 +192,6 @@ public class RRTStarAlgo extends PathAlgo {
                 PathFinding.getInstance().Update();
                 PathFinding.getInstance().delay();
 
-//                Node bestParent = getBestParent(newNode, nodes);
-//                newNode.setParent(bestParent);
-//                newNode.setCost(bestParent.getCost() + bestParent.getDistance(newNode));
-//                nodes.add(newNode);
                 nodes.get(nodes.size() - 1).setParent(bestParent);
                 nodes.get(nodes.size() - 1).setCost(bestParent.getCost() + bestParent.getDistance(newNode));
                 /**GUI Update*/

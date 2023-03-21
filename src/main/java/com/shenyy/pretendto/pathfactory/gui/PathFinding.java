@@ -2,8 +2,11 @@ package com.shenyy.pretendto.pathfactory.gui;
 
 import com.shenyy.pretendto.pathfactory.*;
 import com.shenyy.pretendto.pathfactory.enumtype.AlgoType;
+import com.shenyy.pretendto.pathfactory.gui.chart.LineChart_AWT;
 import com.shenyy.pretendto.pathfactory.node.Node;
 import com.shenyy.pretendto.pathfactory.node.NodeGrid;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.plot.PlotOrientation;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -56,6 +59,13 @@ public class PathFinding {
     public List<Node> nodeList = new ArrayList<>();
     //draw final path with line
     public List<Node> linePath = new ArrayList<>();
+    public double[] bestLengthArr;
+    public double[] bestLengthGen;
+
+    //CHART
+    private LineChart_AWT chart1;
+    private LineChart_AWT chart2;
+
 
     PathFactory<Point, Obstacle<Point>> staticPathFactory;
     Random r = new Random();
@@ -527,11 +537,31 @@ public class PathFinding {
         densityL.setText(obstacles.getValue() + "%");
         checkL.setText("Checks: " + checks);
 
-        //ACO
+        //ACO & GA parameters
         param0ValueL.setText(String.valueOf(MAX_GEN));
         param1ValueL.setText(String.valueOf(param1));
         param2ValueL.setText(String.valueOf(param2));
         param3ValueL.setText(String.valueOf(param3));
+
+        //CHART
+        if (bestLengthArr != null) {
+            if (chart1 == null) {
+                chart1 = new LineChart_AWT("Path Planning", "Best Length", "Best_Length", bestLengthArr);
+                chart1.pack();
+                chart1.setVisible(true);
+            } else {
+                chart1.updateChart(bestLengthArr);
+            }
+        }
+        if (bestLengthGen != null) {
+            if (chart2 == null) {
+                chart2 = new LineChart_AWT("Path Planning", "Best Length Gen", "Best_Length_Gen", bestLengthGen);
+                chart2.pack();
+                chart2.setVisible(true);
+            } else {
+                chart2.updateChart(bestLengthGen);
+            }
+        }
     }
 
     public void reset() {    //RESET METHOD
