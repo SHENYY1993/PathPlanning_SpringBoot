@@ -62,8 +62,8 @@ public class PathPlanningBizImpl implements PathPlanningBiz {
             node = node.getParent();
         }
         res.put("path", path);
-        res.put("bestLengthArr",PathFinding.getInstance().bestLengthArr);
-        res.put("bestLengthGen",PathFinding.getInstance().bestLengthGen);
+        res.put("bestLengthArr", PathFinding.getInstance().bestLengthArr);
+        res.put("bestLengthGen", PathFinding.getInstance().bestLengthGen);
         return res;
     }
 
