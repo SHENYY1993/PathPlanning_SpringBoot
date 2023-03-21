@@ -1,6 +1,7 @@
 package com.shenyy.pretendto.pathfactory.algo;
 
 import com.shenyy.pretendto.pathfactory.Path;
+import com.shenyy.pretendto.pathfactory.dijkstra2.NodeGUI;
 import com.shenyy.pretendto.pathfactory.dijkstra2.PathFinding;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class GeneticAlgo extends PathAlgo {
         super(path);
         //获取城市数量
         cityNum = 0;
-        com.shenyy.pretendto.pathfactory.dijkstra2.Node[][] map = PathFinding.getInstance().map;
+        NodeGUI[][] map = PathFinding.getInstance().map;
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[0].length; j++) {
                 if (map[i][j].getType() == 2) {
@@ -44,12 +45,13 @@ public class GeneticAlgo extends PathAlgo {
 
     @Override
     public void initialize() {
+        System.out.println("Genetic algorithm initializing...");
         //初始化需要途径的点
         double[] x;
         double[] y;
 
         //获取城市分布
-        com.shenyy.pretendto.pathfactory.dijkstra2.Node[][] map = PathFinding.getInstance().map;
+        NodeGUI[][] map = PathFinding.getInstance().map;
 
         distanceMatrix = new double[cityNum][cityNum];
         x = new double[cityNum];
@@ -86,6 +88,7 @@ public class GeneticAlgo extends PathAlgo {
 
     @Override
     public void construct() {
+        System.out.println("Genetic algorithm constructing 2D path...");
         run();
         /**GUI Update*/
         updateGui();

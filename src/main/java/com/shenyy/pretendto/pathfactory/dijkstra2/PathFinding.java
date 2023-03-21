@@ -48,7 +48,7 @@ public class PathFinding {
     //BOOLEANS
     public boolean solving = false;
     //UTIL
-    public Node[][] map;
+    public NodeGUI[][] map;
 
     //RRT* Node List
     public List<com.shenyy.pretendto.pathfactory.algo.Node> nodeList = new ArrayList<>();
@@ -120,7 +120,7 @@ public class PathFinding {
     public void generateMap() {    //GENERATE MAP
         clearMap();    //CREATE CLEAR MAP TO START
         for (int i = 0; i < density; i++) {
-            Node current;
+            NodeGUI current;
             do {
                 int x = r.nextInt(cells);
                 int y = r.nextInt(cells);
@@ -135,10 +135,10 @@ public class PathFinding {
         finishy = -1;
         startx = -1;
         starty = -1;
-        map = new Node[cells][cells];    //CREATE NEW MAP OF NODES
+        map = new NodeGUI[cells][cells];    //CREATE NEW MAP OF NODES
         for (int x = 0; x < cells; x++) {
             for (int y = 0; y < cells; y++) {
-                map[x][y] = new Node(3, x, y);    //SET ALL NODES TO EMPTY
+                map[x][y] = new NodeGUI(3, x, y);    //SET ALL NODES TO EMPTY
             }
         }
         //RRT* nodes
@@ -150,17 +150,17 @@ public class PathFinding {
     public void resetMap() {    //RESET MAP
         for (int x = 0; x < cells; x++) {
             for (int y = 0; y < cells; y++) {
-                Node current = map[x][y];
+                NodeGUI current = map[x][y];
                 if (current.getType() == 4 || current.getType() == 5)    //CHECK TO SEE IF CURRENT NODE IS EITHER CHECKED OR FINAL PATH
-                    map[x][y] = new Node(3, x, y);    //RESET IT TO AN EMPTY NODE
+                    map[x][y] = new NodeGUI(3, x, y);    //RESET IT TO AN EMPTY NODE
             }
         }
         if (startx > -1 && starty > -1) {    //RESET THE START AND FINISH
-            map[startx][starty] = new Node(0, startx, starty);
+            map[startx][starty] = new NodeGUI(0, startx, starty);
             map[startx][starty].setHops(0);
         }
         if (finishx > -1 && finishy > -1)
-            map[finishx][finishy] = new Node(1, finishx, finishy);
+            map[finishx][finishy] = new NodeGUI(1, finishx, finishy);
         //RRT* nodes
         nodeList.clear();
         linePath.clear();
@@ -612,7 +612,7 @@ public class PathFinding {
             try {
                 int x = e.getX() / CSIZE;
                 int y = e.getY() / CSIZE;
-                Node current = map[x][y];
+                NodeGUI current = map[x][y];
                 if ((tool == 2 || tool == 3) && (current.getType() != 0 && current.getType() != 1))
                     current.setType(tool);
                 Update();
@@ -642,7 +642,7 @@ public class PathFinding {
             try {
                 int x = e.getX() / CSIZE;    //GET THE X AND Y OF THE MOUSE CLICK IN RELATION TO THE SIZE OF THE GRID
                 int y = e.getY() / CSIZE;
-                Node current = map[x][y];
+                NodeGUI current = map[x][y];
                 switch (tool) {
                     case 0: {    //START NODE
                         if (current.getType() != 2) {    //IF NOT WALL

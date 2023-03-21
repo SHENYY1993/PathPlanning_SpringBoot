@@ -29,7 +29,7 @@ public class Path2D extends Path {
                 break;
             case RRT_STAR:
 //                pathAlgo = new RRTStarAlgo<>(this);
-                pathAlgo = new RRTStarAlgo2(this);
+                pathAlgo = new RRTStarAlgo(this);
                 break;
             case INFORMED_RRT:
                 pathAlgo = new InformedRRTStarAlgo<>(this);
