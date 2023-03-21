@@ -1,12 +1,8 @@
 package com.shenyy.pretendto;
 
-import com.shenyy.pretendto.pathfactory.dijkstra2.PathFinding;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cache.annotation.EnableCaching;
+import com.shenyy.pretendto.pathfactory.gui.PathFinding;
 
 import javax.annotation.PostConstruct;
-import javax.swing.*;
 
 //@EnableCaching //开启缓存
 //@SpringBootApplication

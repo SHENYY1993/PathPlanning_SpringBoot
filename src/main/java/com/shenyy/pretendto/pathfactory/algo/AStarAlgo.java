@@ -1,15 +1,15 @@
 package com.shenyy.pretendto.pathfactory.algo;
 
 import com.shenyy.pretendto.pathfactory.Path;
-import com.shenyy.pretendto.pathfactory.dijkstra2.NodeGUI;
-import com.shenyy.pretendto.pathfactory.dijkstra2.PathFinding;
+import com.shenyy.pretendto.pathfactory.node.NodeGrid;
+import com.shenyy.pretendto.pathfactory.gui.PathFinding;
 
 import java.util.ArrayList;
 
 public class AStarAlgo<T, O> extends PathAlgo {
     private boolean solving = false;
     private int cells;
-    private NodeGUI[][] map;
+    private NodeGrid[][] map;
     private int checks = 0;
     private double length = 0;
     private int startx = -1;
@@ -40,14 +40,14 @@ public class AStarAlgo<T, O> extends PathAlgo {
     public void construct() {
         //TODO 2D path construct
         System.out.println("A star algorithm constructing 2D path...");
-        ArrayList<NodeGUI> priority = new ArrayList<>();
+        ArrayList<NodeGrid> priority = new ArrayList<>();
         priority.add(map[startx][starty]);
         while (solving) {
             if (priority.size() <= 0) {
                 solving = false;
                 break;
             }
-            ArrayList<NodeGUI> explored = exploreNeighbors(priority.get(0));
+            ArrayList<NodeGrid> explored = exploreNeighbors(priority.get(0));
             if (explored.size() > 0) {
                 priority.remove(0);
                 priority.addAll(explored);
@@ -60,14 +60,14 @@ public class AStarAlgo<T, O> extends PathAlgo {
         }
     }
 
-    public ArrayList<NodeGUI> exploreNeighbors(NodeGUI current) {    //EXPLORE NEIGHBORS
-        ArrayList<NodeGUI> explored = new ArrayList<>();    //LIST OF NODES THAT HAVE BEEN EXPLORED
+    public ArrayList<NodeGrid> exploreNeighbors(NodeGrid current) {    //EXPLORE NEIGHBORS
+        ArrayList<NodeGrid> explored = new ArrayList<>();    //LIST OF NODES THAT HAVE BEEN EXPLORED
         for (int a = -1; a <= 1; a++) {
             for (int b = -1; b <= 1; b++) {
                 int xbound = current.getX() + a;
                 int ybound = current.getY() + b;
                 if ((xbound > -1 && xbound < cells) && (ybound > -1 && ybound < cells)) {    //MAKES SURE THE NODE IS NOT OUTSIDE THE GRID
-                    NodeGUI neighbor = map[xbound][ybound];
+                    NodeGrid neighbor = map[xbound][ybound];
                     double hops = current.getHops() + current.getEuclidDist(xbound, ybound);
                     if ((neighbor.getHops() == -1 || neighbor.getHops() > hops) && neighbor.getType() != 2) {    //CHECKS IF THE NODE IS NOT A WALL AND THAT IT HAS NOT BEEN EXPLORED
                         explore(neighbor, current.getX(), current.getY(), hops);    //EXPLORE THE NODE
@@ -79,7 +79,7 @@ public class AStarAlgo<T, O> extends PathAlgo {
         return explored;
     }
 
-    public void explore(NodeGUI current, int lastx, int lasty, double hops) {    //EXPLORE A NODE
+    public void explore(NodeGrid current, int lastx, int lasty, double hops) {    //EXPLORE A NODE
         if (current.getType() != 0 && current.getType() != 1)    //CHECK THAT THE NODE IS NOT THE START OR FINISH
             current.setType(4);    //SET IT TO EXPLORED
         current.setLastNode(lastx, lasty);    //KEEP TRACK OF THE NODE THAT THIS NODE IS EXPLORED FROM
@@ -95,7 +95,7 @@ public class AStarAlgo<T, O> extends PathAlgo {
         length = hops;
         PathFinding.getInstance().length = length;
         while (hops > Math.sqrt(2) + 0.1) {    //BACKTRACK FROM THE END OF THE PATH TO THE START
-            NodeGUI current = map[lx][ly];
+            NodeGrid current = map[lx][ly];
             current.setType(5);
             lx = current.getLastX();
             ly = current.getLastY();
@@ -107,7 +107,7 @@ public class AStarAlgo<T, O> extends PathAlgo {
         PathFinding.getInstance().solving = solving;
     }
 
-    public ArrayList<NodeGUI> sortQue(ArrayList<NodeGUI> sort) {    //SORT PRIORITY QUE
+    public ArrayList<NodeGrid> sortQue(ArrayList<NodeGrid> sort) {    //SORT PRIORITY QUE
         int c = 0;
         while (c < sort.size()) {
             int sm = c;
@@ -116,7 +116,7 @@ public class AStarAlgo<T, O> extends PathAlgo {
                     sm = i;
             }
             if (c != sm) {
-                NodeGUI temp = sort.get(c);
+                NodeGrid temp = sort.get(c);
                 sort.set(c, sort.get(sm));
                 sort.set(sm, temp);
             }

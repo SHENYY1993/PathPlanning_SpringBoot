@@ -1,4 +1,4 @@
-package com.shenyy.pretendto.pathfactory.dijkstra1;
+package com.shenyy.pretendto.pathfactory.dijkstraGraph;
 
 class Vertex implements Comparable<Vertex> {
 

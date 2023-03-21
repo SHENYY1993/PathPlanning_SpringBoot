@@ -1,8 +1,8 @@
 package com.shenyy.pretendto.pathfactory.algo;
 
 import com.shenyy.pretendto.pathfactory.Path;
-import com.shenyy.pretendto.pathfactory.dijkstra2.NodeGUI;
-import com.shenyy.pretendto.pathfactory.dijkstra2.PathFinding;
+import com.shenyy.pretendto.pathfactory.node.NodeGrid;
+import com.shenyy.pretendto.pathfactory.gui.PathFinding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
 public class RRTAlgo<T, O> extends PathAlgo {
     private boolean solving = false;
     private int cells;
-    private NodeGUI[][] map;
+    private NodeGrid[][] map;
     private int checks = 0;
     private double length = 0;
     private int startx = -1;
@@ -44,7 +44,7 @@ public class RRTAlgo<T, O> extends PathAlgo {
     public void construct() {
         //TODO 2D path construct
         System.out.println("RRT algorithm constructing 2D path...");
-        List<NodeGUI> priority = new ArrayList<>();    //CREATE A PRIORITY QUE
+        List<NodeGrid> priority = new ArrayList<>();    //CREATE A PRIORITY QUE
         priority.add(map[startx][starty]);    //ADD THE START TO THE QUE
         for (int i = 0; i < gen; i++) {
             if (priority.size() <= 0) {
@@ -123,7 +123,7 @@ public class RRTAlgo<T, O> extends PathAlgo {
         length = hops;
         PathFinding.getInstance().length = length;
         while (hops > 0) {    //BACKTRACK FROM THE END OF THE PATH TO THE START
-            NodeGUI current = map[lx][ly];
+            NodeGrid current = map[lx][ly];
             current.setType(5);
             lx = current.getLastX();
             ly = current.getLastY();

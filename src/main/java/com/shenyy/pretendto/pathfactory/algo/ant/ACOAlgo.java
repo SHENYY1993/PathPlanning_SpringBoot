@@ -1,10 +1,10 @@
 package com.shenyy.pretendto.pathfactory.algo.ant;
 
 import com.shenyy.pretendto.pathfactory.Path;
-import com.shenyy.pretendto.pathfactory.algo.Node;
+import com.shenyy.pretendto.pathfactory.node.Node;
 import com.shenyy.pretendto.pathfactory.algo.PathAlgo;
-import com.shenyy.pretendto.pathfactory.dijkstra2.NodeGUI;
-import com.shenyy.pretendto.pathfactory.dijkstra2.PathFinding;
+import com.shenyy.pretendto.pathfactory.node.NodeGrid;
+import com.shenyy.pretendto.pathfactory.gui.PathFinding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +52,7 @@ public class ACOAlgo extends PathAlgo {
 
         //获取城市数量
         cityNum = 0;
-        NodeGUI[][] map = PathFinding.getInstance().map;
+        NodeGrid[][] map = PathFinding.getInstance().map;
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[0].length; j++) {
                 if (map[i][j].getType() == 2) {
@@ -85,7 +85,7 @@ public class ACOAlgo extends PathAlgo {
         double[] y;
 
         //获取城市分布
-        NodeGUI[][] map = PathFinding.getInstance().map;
+        NodeGrid[][] map = PathFinding.getInstance().map;
 
         distance = new double[cityNum][cityNum];
         x = new double[cityNum];
