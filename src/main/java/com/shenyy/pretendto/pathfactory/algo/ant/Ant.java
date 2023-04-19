@@ -7,7 +7,7 @@ public class Ant implements Cloneable {
 
     private Vector<Integer> tabu; // 禁忌表
     private Vector<Integer> allowedCities; // 允许搜索的采样点
-    private double[][] delta; // 信息数变化矩阵
+    private double[][] delta; // 信息素变化矩阵
     private double[][] distance; // 距离矩阵
     private double alpha;
     private double beta;

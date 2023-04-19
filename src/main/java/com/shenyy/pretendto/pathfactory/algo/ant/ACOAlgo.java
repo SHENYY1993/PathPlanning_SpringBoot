@@ -23,7 +23,7 @@ public class ACOAlgo extends PathAlgo {
     private int curGen = 0; // 当前运行代数
     private double[][] pheromone; // 信息素矩阵
     private double[][] distance; // 距离矩阵
-    private double bestLength; // 最佳长度
+    public double bestLength; // 最佳长度
     private int[] bestTour; // 最佳路径
 
     // 三个参数
@@ -34,6 +34,7 @@ public class ACOAlgo extends PathAlgo {
     //搜索过程数据记录
     public double[] bestLengthGen; // 当代最短路径数组
     public double[] bestLengthArr; // 最短路径数组
+    public static int bestGen; // 达到最优所迭代的代数
 
 
     private static final double LEN = 0.5; //补偿半格长度
@@ -65,15 +66,11 @@ public class ACOAlgo extends PathAlgo {
             }
         }
 
-        antNum = (int) (cityNum * 1.5);
+        antNum = (int) (cityNum * PathFinding.getInstance().param4);
         ants = new Ant[antNum];
-        MAX_GEN = PathFinding.getInstance().MAX_GEN;
 //        alpha = a;
 //        beta = b;
 //        rho = r;
-        alpha = PathFinding.getInstance().param1;
-        beta = PathFinding.getInstance().param2;
-        rho = PathFinding.getInstance().param3;
     }
 
     @Override
@@ -184,6 +181,7 @@ public class ACOAlgo extends PathAlgo {
                 // 查看这只蚂蚁行走路径距离是否比当前距离优秀
                 if (ants[i].getTourLength() < bestLength) {
                     // 比当前优秀则拷贝优秀TSP路径
+                    bestGen = g;
                     bestLength = ants[i].getTourLength();
                     for (int k = 0; k < cityNum + 1; k++) {
                         bestTour[k] = ants[i].getTabu().get(k).intValue();
@@ -217,8 +215,7 @@ public class ACOAlgo extends PathAlgo {
                 pheromone[i][j] = pheromone[i][j] * (1 - rho);
 
         // 信息素更新
-//        for (int i = 0; i < antNum; i++) { //BUG: 信息素更新应该是cityNum * cityNum的矩阵
-        for (int i = 0; i < cityNum; i++) {
+        for (int i = 0; i < antNum; i++) {
             // 更新这只蚂蚁的信息数变化矩阵，对称矩阵
             for (int j = 0; j < cityNum; j++) {
                 ants[i].getDelta()[ants[i].getTabu().get(j).intValue()][ants[i].getTabu().get(j + 1).intValue()]
@@ -226,6 +223,9 @@ public class ACOAlgo extends PathAlgo {
                 ants[i].getDelta()[ants[i].getTabu().get(j + 1).intValue()][ants[i].getTabu().get(j).intValue()]
                         = (1. / ants[i].getTourLength());
             }
+        }
+        // 信息素更新
+        for (int i = 0; i < cityNum; i++) { //BUG: 信息素更新应该是cityNum * cityNum的矩阵
             for (int j = 0; j < cityNum; j++) {
                 for (int k = 0; k < antNum; k++) {
                     pheromone[i][j] += ants[k].getDelta()[i][j];

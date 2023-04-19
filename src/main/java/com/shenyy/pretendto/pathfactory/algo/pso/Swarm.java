@@ -25,8 +25,8 @@ public class Swarm {
      * value will be between 0 (inclusive) and 10 (exclusive).
      */
     private int beginRange, endRange;
-    private static final int DEFAULT_BEGIN_RANGE = -100;
-    private static final int DEFAULT_END_RANGE = 101;
+    private static final int DEFAULT_BEGIN_RANGE = 0;
+    private static final int DEFAULT_END_RANGE = 5;
 
     /**
      * Construct the Swarm with default values.
@@ -89,9 +89,9 @@ public class Swarm {
 
         System.out.println("---------------------------RESULT---------------------------");
         System.out.println("x = " + bestPosition.getX());
-        if (function != FunctionType.FunctionA) {
-            System.out.println("y = " + bestPosition.getY());
-        }
+        System.out.println("y = " + bestPosition.getY());
+        System.out.println("z = " + bestPosition.getZ());
+
         System.out.println("Final Best Evaluation: " + bestEval);
         System.out.println("---------------------------COMPLETE-------------------------");
 

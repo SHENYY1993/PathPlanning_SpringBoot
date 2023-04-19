@@ -1,5 +1,7 @@
 package com.shenyy.pretendto.pathfactory.algo.pso;
 
+import com.shenyy.pretendto.pathfactory.gui.PathFinding;
+
 import java.util.Scanner;
 
 public class Main {
@@ -18,7 +20,7 @@ public class Main {
         }
     }
 
-    private static void menu (boolean flag) {
+    public static void menu (boolean flag) {
         Swarm swarm;
         Particle.FunctionType function;
         int particles, epochs;
@@ -35,7 +37,6 @@ public class Main {
             swarm = new Swarm(function, particles, epochs, inertia, cognitive, social);
         } else {
             swarm = new Swarm(function, particles, epochs);
-
         }
 
         swarm.run();
@@ -108,6 +109,7 @@ public class Main {
         System.out.println("2. Ackley's Function");
         System.out.println("3. Booth's Function");
         System.out.println("4. Three Hump Camel Function");
+        System.out.println("5. ACO Parameter Optimization Function");
         System.out.print("Function:  ");
     }
 
@@ -116,6 +118,7 @@ public class Main {
         else if (input == 2)    return Particle.FunctionType.Ackleys;
         else if (input == 3)    return Particle.FunctionType.Booths;
         else if (input == 4)    return Particle.FunctionType.ThreeHumpCamel;
+        else if (input == 5)    return Particle.FunctionType.ACO;
         System.out.println("Invalid Input.");
         return null;
     }

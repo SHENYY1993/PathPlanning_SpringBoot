@@ -8,4 +8,5 @@ public enum AlgoType {
     INFORMED_RRT,
     ACO,
     GA,
+    PSO
 }

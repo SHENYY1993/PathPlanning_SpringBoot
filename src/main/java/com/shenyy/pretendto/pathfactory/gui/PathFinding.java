@@ -1,6 +1,8 @@
 package com.shenyy.pretendto.pathfactory.gui;
 
 import com.shenyy.pretendto.pathfactory.*;
+import com.shenyy.pretendto.pathfactory.algo.pso.Main;
+import com.shenyy.pretendto.pathfactory.algo.pso.PSOAlgo;
 import com.shenyy.pretendto.pathfactory.enumtype.AlgoType;
 import com.shenyy.pretendto.pathfactory.gui.chart.LineChart_AWT;
 import com.shenyy.pretendto.pathfactory.node.Node;
@@ -15,6 +17,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -24,7 +28,7 @@ public class PathFinding {
     //FRAME
     JFrame frame;
     //GENERAL VARIABLES
-    public int cells = 20;
+    public int cells = 50;
     public int delay = 30;
     public double dense = .5;
     public double density = (cells * cells) * .5;
@@ -46,6 +50,7 @@ public class PathFinding {
     public double param1 = 1;
     public double param2 = 2;
     public double param3 = 0.2;
+    public double param4 = 1.5;
 
     //UTIL ARRAYS
     private String[] algorithms = {"Dijkstra", "A*", "RRT", "RRT*", "ACO", "GA"};
@@ -70,7 +75,7 @@ public class PathFinding {
     PathFactory<Point, Obstacle<Point>> staticPathFactory;
     Random r = new Random();
     //SLIDERS
-    JSlider size = new JSlider(1, 5, 2);
+    JSlider size = new JSlider(1, 12, 5);
     JSlider speed = new JSlider(0, 500, delay);
     JSlider obstacles = new JSlider(1, 100, 50);
     //SLIDERS——ACO
@@ -78,6 +83,7 @@ public class PathFinding {
     JSlider param1SL = new JSlider(0, 10, 4);
     JSlider param2SL = new JSlider(0, 10, 2);
     JSlider param3SL = new JSlider(2, 5, 2);
+    JSlider param4SL = new JSlider(1, 100, 15);
     //LABELS
     JLabel algL = new JLabel("Algorithms");
     JLabel toolL = new JLabel("Toolbox");
@@ -96,16 +102,20 @@ public class PathFinding {
     JLabel param1L = new JLabel("alpha");
     JLabel param2L = new JLabel("beta");
     JLabel param3L = new JLabel("rho");
+    JLabel param4L = new JLabel("num");
     JLabel param0ValueL = new JLabel(String.valueOf(MAX_GEN));
     JLabel param1ValueL = new JLabel(String.valueOf(param1));
     JLabel param2ValueL = new JLabel(String.valueOf(param2));
     JLabel param3ValueL = new JLabel(String.valueOf(param3));
+    JLabel param4ValueL = new JLabel(String.valueOf(param4));
     //BUTTONS
     JButton searchB = new JButton("Start Search");
     JButton resetB = new JButton("Reset");
     JButton genMapB = new JButton("Generate Map");
     JButton clearMapB = new JButton("Clear Map");
     JButton creditB = new JButton("Credit");
+    JButton openButton = new JButton("Open File");
+    JButton optimizeButton = new JButton("Optimization");
     //DROP DOWN
     JComboBox algorithmsBx = new JComboBox(algorithms);
     JComboBox toolBx = new JComboBox(tools);
@@ -116,6 +126,10 @@ public class PathFinding {
     Map canvas;
     //BORDER
     Border loweredetched = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
+
+    // CSV Model
+    private CsvTableModel model;
+    private JTable table;
 
     private static PathFinding instance;
 
@@ -140,6 +154,18 @@ public class PathFinding {
             } while (current.getType() == 2);    //IF IT IS ALREADY A WALL, FIND A NEW ONE
             current.setType(2);    //SET NODE TO BE A WALL
         }
+    }
+
+    public void importMap(ArrayList<String[]> lines) { // import map from csv
+        clearMap();    //CREATE CLEAR MAP TO START
+        for (int i = 0; i < lines.size(); i++) {
+            NodeGrid current;
+            int x = Integer.parseInt(lines.get(i)[1]);
+            int y = Integer.parseInt(lines.get(i)[2]);
+            current = map[x][y];
+            current.setType(2);    //SET NODE TO BE A WALL
+        }
+        System.out.println("Finish import map");
     }
 
     public void clearMap() {    //CLEAR MAP
@@ -191,7 +217,7 @@ public class PathFinding {
 
         toolP.setBorder(BorderFactory.createTitledBorder(loweredetched, "Controls"));
         int space = 25;
-        int buff = 45;
+        int buff = 35;
 
         toolP.setLayout(null);
         toolP.setBounds(10, 10, 210, 600);
@@ -210,6 +236,10 @@ public class PathFinding {
 
         clearMapB.setBounds(40, space, 120, 25);
         toolP.add(clearMapB);
+        space += buff;
+
+        openButton.setBounds(40, space, 120, 25);
+        toolP.add(openButton);
         space += 40;
 
         algL.setBounds(40, space, 120, 25);
@@ -303,6 +333,17 @@ public class PathFinding {
         algoInfoP.add(param3SL);
         param3ValueL.setBounds(200, space, widthL, heightL);
         algoInfoP.add(param3ValueL);
+        space += buff;
+        param4L.setBounds(15, space, widthL, heightL);
+        algoInfoP.add(param4L);
+        param4SL.setMajorTickSpacing(10);
+        param4SL.setBounds(90, space, 100, heightL);
+        algoInfoP.add(param4SL);
+        param4ValueL.setBounds(200, space, widthL, heightL);
+        algoInfoP.add(param4ValueL);
+        space += buff;
+        optimizeButton.setBounds(40, space, 120, 25);
+        algoInfoP.add(optimizeButton);
 
 
         frame.getContentPane().add(toolP);
@@ -356,6 +397,7 @@ public class PathFinding {
                     param1L.setText("alpha");
                     param2L.setText("beta");
                     param3L.setText("rho");
+                    param4L.setText("num");
 
                     param0SL.setMinimum(0);
                     param0SL.setMaximum(1000);
@@ -369,6 +411,9 @@ public class PathFinding {
                     param3SL.setMinimum(0);
                     param3SL.setMaximum(10);
                     param3SL.setValue(2);
+                    param4SL.setMinimum(1);
+                    param4SL.setMaximum(100);
+                    param4SL.setValue(15);
                 } else if (curAlg == 5) {
                     startx = 0;
                     starty = 0;
@@ -379,6 +424,7 @@ public class PathFinding {
                     param1L.setText("crossover");
                     param2L.setText("mutation");
                     param3L.setText("population");
+                    param4L.setText("num");
 
                     param0SL.setMinimum(0);
                     param0SL.setMaximum(1000);
@@ -392,6 +438,9 @@ public class PathFinding {
                     param3SL.setMinimum(0);
                     param3SL.setMaximum(200);
                     param3SL.setValue(100);
+                    param4SL.setMinimum(1);
+                    param4SL.setMaximum(100);
+                    param4SL.setValue(15);
                 }
                 Update();
             }
@@ -434,6 +483,37 @@ public class PathFinding {
                         + "          Build Date:  March 28, 2018   ", "Credit", JOptionPane.PLAIN_MESSAGE, new ImageIcon(""));
             }
         });
+
+        optimizeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+//                Main.menu(false);
+            }
+        });
+
+        openButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        BufferedReader br = new BufferedReader(new FileReader(fileChooser.getSelectedFile()));
+                        String line;
+                        ArrayList<String[]> lines = new ArrayList<String[]>();
+                        while ((line = br.readLine()) != null) {
+                            lines.add(line.split(","));
+                        }
+                        br.close();
+//                        model = new CsvTableModel(lines.toArray(new String[0][]));
+//                        table.setModel(model);
+                        importMap(lines);
+                        Update();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+
         //Parameters
         param0SL.addChangeListener((e) -> {
             MAX_GEN = param0SL.getValue();
@@ -461,6 +541,10 @@ public class PathFinding {
             } else if (curAlg == 5) {
                 param3 = param3SL.getValue();
             }
+            Update();
+        });
+        param4SL.addChangeListener((e) -> {
+            param4 = (double) param4SL.getValue() / 10;
             Update();
         });
 
@@ -542,6 +626,7 @@ public class PathFinding {
         param1ValueL.setText(String.valueOf(param1));
         param2ValueL.setText(String.valueOf(param2));
         param3ValueL.setText(String.valueOf(param3));
+        param4ValueL.setText(String.valueOf(param4));
 
         //CHART
         if (bestLengthArr != null) {

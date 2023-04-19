@@ -2,6 +2,7 @@ package com.shenyy.pretendto.pathfactory;
 
 import com.shenyy.pretendto.pathfactory.algo.*;
 import com.shenyy.pretendto.pathfactory.algo.ant.ACOAlgo;
+import com.shenyy.pretendto.pathfactory.algo.pso.PSOAlgo;
 import com.shenyy.pretendto.pathfactory.enumtype.AlgoType;
 import com.shenyy.pretendto.pathfactory.enumtype.PathType;
 import javafx.geometry.Point2D;
@@ -39,6 +40,9 @@ public class Path2D extends Path {
                 break;
             case GA:
                 pathAlgo = new GeneticAlgo(this);
+                break;
+            case PSO:
+                pathAlgo = new PSOAlgo(this);
                 break;
             default:
                 pathAlgo = new InformedRRTStarAlgo<>(this);

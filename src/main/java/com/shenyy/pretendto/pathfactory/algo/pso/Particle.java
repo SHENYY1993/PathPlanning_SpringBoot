@@ -15,10 +15,11 @@ class Particle {
 
     /**
      * Construct a Particle with a random starting position.
-     * @param beginRange    the minimum xyz values of the position (inclusive)
-     * @param endRange      the maximum xyz values of the position (exclusive)
+     *
+     * @param beginRange the minimum xyz values of the position (inclusive)
+     * @param endRange   the maximum xyz values of the position (exclusive)
      */
-    Particle (FunctionType function, int beginRange, int endRange) {
+    Particle(FunctionType function, int beginRange, int endRange) {
         if (beginRange >= endRange) {
             throw new IllegalArgumentException("Begin range must be less than end range.");
         }
@@ -32,21 +33,24 @@ class Particle {
 
     /**
      * The evaluation of the current position.
-     * @return      the evaluation
+     *
+     * @return the evaluation
      */
-    private double eval () {
+    private double eval() {
         if (function == FunctionType.FunctionA) {
             return Function.functionA(position.getX());
         } else if (function == FunctionType.Ackleys) {
             return Function.ackleysFunction(position.getX(), position.getY());
         } else if (function == FunctionType.Booths) {
             return Function.boothsFunction(position.getX(), position.getY());
-        } else {
+        } else if (function == FunctionType.ThreeHumpCamel) {
             return Function.threeHumpCamelFunction(position.getX(), position.getY());
+        } else {
+            return Function.acoParamFunction(position.getX(), position.getY(), position.getZ(), 1.5);
         }
     }
 
-    private void setRandomPosition (int beginRange, int endRange) {
+    private void setRandomPosition(int beginRange, int endRange) {
         int x = rand(beginRange, endRange);
         int y = rand(beginRange, endRange);
         int z = rand(beginRange, endRange);
@@ -55,11 +59,12 @@ class Particle {
 
     /**
      * Generate a random number between a certain range.
-     * @param beginRange    the minimum value (inclusive)
-     * @param endRange      the maximum value (exclusive)
-     * @return              the randomly generated value
+     *
+     * @param beginRange the minimum value (inclusive)
+     * @param endRange   the maximum value (exclusive)
+     * @return the randomly generated value
      */
-    private static int rand (int beginRange, int endRange) {
+    private static int rand(int beginRange, int endRange) {
         Random r = new Random();
         return r.nextInt(endRange - beginRange) + beginRange;
     }
@@ -67,7 +72,7 @@ class Particle {
     /**
      * Update the personal best if the current evaluation is better.
      */
-    void updatePersonalBest () {
+    void updatePersonalBest() {
         double eval = eval();
         if (eval < bestEval) {
             bestPosition = position.clone();
@@ -77,23 +82,26 @@ class Particle {
 
     /**
      * Get a copy of the position of the particle.
-     * @return  the x position
+     *
+     * @return the x position
      */
-    Vector getPosition () {
+    Vector getPosition() {
         return position.clone();
     }
 
     /**
      * Get a copy of the velocity of the particle.
-     * @return  the velocity
+     *
+     * @return the velocity
      */
-    Vector getVelocity () {
+    Vector getVelocity() {
         return velocity.clone();
     }
 
     /**
      * Get a copy of the personal best solution.
-     * @return  the best position
+     *
+     * @return the best position
      */
     Vector getBestPosition() {
         return bestPosition.clone();
@@ -101,24 +109,26 @@ class Particle {
 
     /**
      * Get the value of the personal best solution.
-     * @return  the evaluation
+     *
+     * @return the evaluation
      */
-    double getBestEval () {
+    double getBestEval() {
         return bestEval;
     }
 
     /**
      * Update the position of a particle by adding its velocity to its position.
      */
-    void updatePosition () {
+    void updatePosition() {
         this.position.add(velocity);
     }
 
     /**
      * Set the velocity of the particle.
-     * @param velocity  the new velocity
+     *
+     * @param velocity the new velocity
      */
-    void setVelocity (Vector velocity) {
+    void setVelocity(Vector velocity) {
         this.velocity = velocity.clone();
     }
 
@@ -126,7 +136,8 @@ class Particle {
         FunctionA,
         Ackleys,
         Booths,
-        ThreeHumpCamel
+        ThreeHumpCamel,
+        ACO
     }
 
 }
